@@ -14,3 +14,8 @@
 
 
 // reference additional headers your program requires here
+
+
+#ifndef _Override
+#   define _Override
+#endif
