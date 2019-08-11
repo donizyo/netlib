@@ -56,6 +56,7 @@ EndNetwork()
     return 0;
 }
 
+#   define fdctl ioctlsocket
 #elif OS == OS_LINUX
 int
 InitNetwork()
@@ -68,6 +69,8 @@ EndNetwork()
 {
     return 0;
 }
+
+#   define fdctl fcntl
 #endif
 
 void
