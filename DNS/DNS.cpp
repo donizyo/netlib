@@ -4,6 +4,23 @@
 #include "pch.h"
 #include <iostream>
 
+namespace DNS
+{
+    const static int PORT_DNS = 53;
+
+    class DNSClient
+    {
+    private:
+        const Network::Socket& s;
+    public:
+        DNSClient()
+            : s(Network::TcpSocket("127.0.0.1", 0))
+        {
+
+        }
+    };
+};
+
 int main()
 {
     std::cout << "Hello World!\n"; 
