@@ -56,6 +56,9 @@ EndNetwork()
     return 0;
 }
 
+/*
+@see: https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-ioctlsocket
+*/
 #   define fdctl ioctlsocket
 #elif OS == OS_LINUX
 int
@@ -70,6 +73,9 @@ EndNetwork()
     return 0;
 }
 
+/*
+@see: https://linux.die.net/man/2/fcntl
+*/
 #   define fdctl fcntl
 #endif
 
