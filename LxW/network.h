@@ -151,12 +151,14 @@ namespace Network
     {
     public:
         TcpSocket(std::string address, std::int16_t port);
+        ~TcpSocket();
     };
 
     class DllExport UdpSocket : public Socket
     {
     public:
         UdpSocket(std::string address, std::int16_t port);
+        ~UdpSocket();
     };
 }
 

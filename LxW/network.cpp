@@ -279,9 +279,19 @@ TcpSocket(std::string address, std::int16_t port)
 {
 }
 
+Network::TcpSocket::
+~TcpSocket()
+{
+}
+
 Network::UdpSocket::
 UdpSocket(std::string address, std::int16_t port)
     : Socket(Network::AddressFamily::IPv4, Network::SocketType::Datagram, address, port)
+{
+}
+
+Network::UdpSocket::
+~UdpSocket()
 {
 }
 
