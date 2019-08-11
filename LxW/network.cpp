@@ -142,7 +142,7 @@ error:
 using namespace Network;
 
 Network::Socket::
-Socket(AddressFamily addressFamily, SocketType socketType, std::string address, std::int16_t port)
+Socket(AddressFamily addressFamily, SocketType socketType, std::string address, Network::PORT port)
     : sock(INVALID_SOCKET)
     , af(addressFamily)
     , type(socketType)
@@ -169,7 +169,7 @@ GetHandle() const
 
 void
 Network::Socket::
-Connect(std::string address, std::int16_t port)
+Connect(std::string address, Network::PORT port)
 {
     sockaddr_in name = { 0 };
     HandleIPAddress(af, address.c_str(), port, &name);
@@ -274,7 +274,7 @@ SocketStream(Socket& s)
 }
 
 Network::TcpSocket::
-TcpSocket(std::string address, std::int16_t port)
+TcpSocket(std::string address, Network::PORT port)
     : Socket(Network::AddressFamily::IPv4, Network::SocketType::Stream, address, port)
 {
 }
@@ -285,7 +285,7 @@ Network::TcpSocket::
 }
 
 Network::UdpSocket::
-UdpSocket(std::string address, std::int16_t port)
+UdpSocket(std::string address, Network::PORT port)
     : Socket(Network::AddressFamily::IPv4, Network::SocketType::Datagram, address, port)
 {
 }

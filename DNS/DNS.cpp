@@ -25,7 +25,7 @@ namespace DNS
     private:
         const Network::Socket& s;
     public:
-        DNSServer(std::string address="0.0.0.0", std::int16_t port=PORT_DNS)
+        DNSServer(std::string address="0.0.0.0", Network::PORT port=PORT_DNS)
             : s(Network::UdpSocket(address, port))
         {
         }

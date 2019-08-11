@@ -108,6 +108,8 @@ namespace Network
         Raw = SOCK_RAW,
     };
 
+    using PORT = std::int16_t;
+
     class DllExport Socket
     {
     private:
@@ -117,12 +119,12 @@ namespace Network
     public:
         Socket() = delete;
         Socket(const Socket &) = delete;
-        Socket(AddressFamily af, SocketType type, std::string address, std::int16_t port);
+        Socket(AddressFamily af, SocketType type, std::string address, PORT port);
         ~Socket();
 
         const SOCKET& GetHandle() const;
 
-        void Connect(std::string address, std::int16_t port);
+        void Connect(std::string address, PORT port);
 
         void Listen();
 
@@ -150,14 +152,14 @@ namespace Network
     class DllExport TcpSocket : public Socket
     {
     public:
-        TcpSocket(std::string address, std::int16_t port);
+        TcpSocket(std::string address, PORT port);
         ~TcpSocket();
     };
 
     class DllExport UdpSocket : public Socket
     {
     public:
-        UdpSocket(std::string address, std::int16_t port);
+        UdpSocket(std::string address, PORT port);
         ~UdpSocket();
     };
 }
