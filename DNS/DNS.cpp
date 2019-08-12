@@ -38,7 +38,7 @@ namespace DNS
     QTYPE fields appear in the question part of a query. QTYPES are a
     superset of TYPEs, hence all TYPEs are valid QTYPEs.
     */
-    enum QuestionType
+    enum QuestionType : uint8_t
     {
         // RFC 1035
         QT_AXFR = 252, // A request for a transfer of an entire zone
