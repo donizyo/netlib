@@ -71,10 +71,14 @@ namespace DNS
 // <domain> ::= <subdomain> | " "
 #define pDomain     "(" pSubdomain ")?"
 
+    /*
+    Return: true, if matches;
+            false, otherwise.
+    */
     bool ValidateDomainName(std::string name)
     {
         std::regex rgx((pDomain), std::regex_constants::ECMAScript);
-        return false;
+        return std::regex_match(name, rgx);
     }
 
 #undef rLetter
