@@ -63,6 +63,13 @@ typedef struct sockaddr SOCKADDR;
 
 #endif
 
+#ifndef UDP_BUFFER_CAPACITY
+#   define UDP_BUFFER_CAPACITY 512
+#endif
+#ifndef TCP_BUFFER_CAPACITY
+#   define TCP_BUFFER_CAPACITY 65536
+#endif
+
 typedef SOCKET * SOCKPTR;
 
 int InitNetwork();
