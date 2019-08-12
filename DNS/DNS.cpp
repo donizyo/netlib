@@ -49,6 +49,7 @@ namespace DNS
         USHORT qclass;
     };
 
+// @see: https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-levels-2-and-4-c4200?view=vs-2019
 #pragma warning(disable : 4200)
     struct ResourceRecord
     {
