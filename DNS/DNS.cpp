@@ -176,8 +176,13 @@ namespace DNS
 
 int main()
 {
-    DNS::ResourceRecord rr;
-    std::cout << "Hello World!\n"; 
+    std::string hostname;
+    std::cout << "Look up domain name: ";
+    std::cin >> hostname;
+
+
+    system("pause");
+    return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

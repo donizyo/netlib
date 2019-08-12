@@ -12,6 +12,7 @@
 // TODO: add headers that you want to pre-compile here
 #include "../LxW/network.h"
 
+#include <cstdlib>
 #include <regex>
 #include <string>
 #include <iostream>
