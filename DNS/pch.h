@@ -14,5 +14,7 @@
 
 #include <regex>
 #include <string>
+#include <iostream>
+#include <sstream>
 
 #endif //PCH_H
