@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <regex>
 #include <string>
+#include <vector>
 #include <iostream>
 #include <sstream>
 

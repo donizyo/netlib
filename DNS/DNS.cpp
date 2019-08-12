@@ -153,7 +153,16 @@ namespace DNS
 
     void ResolveDomainName(std::string domain, RecordType type)
     {
+        if (domain.empty())
+            return;
 
+        std::istringstream iss(domain);
+        std::vector<std::string> results(std::istream_iterator<std::string>{iss},
+            std::istream_iterator<std::string>());
+        for (auto part : results)
+        {
+            std::cout << part << std::endl;
+        }
     }
 
     class Client
@@ -184,7 +193,12 @@ int main()
     std::string hostname;
     std::cout << "Look up domain name: ";
     std::cin >> hostname;
+    std::cout << "Handling '"
+        << hostname
+        << "' ..."
+        << std::endl;
 
+    DNS::ResolveDomainName(hostname, DNS::RecordType::RT_A);
 
     system("pause");
     return 0;
