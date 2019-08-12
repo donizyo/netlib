@@ -23,10 +23,33 @@ namespace DNS
         T_AAAA = 28,
     };
 
-    struct Record
+#pragma pack(push, 1)
+    struct DNSHeader
     {
+        USHORT id;
 
+        UCHAR rd : 1;
+        UCHAR tc : 1;
+        UCHAR aa : 1;
+        UCHAR opcode : 4;
+        UCHAR qr : 1;
+
+        UCHAR rcode : 4;
+        UCHAR z : 3;
+        UCHAR ra : 1;
+
+        USHORT qdcount;
+        USHORT ancount;
+        USHORT nscount;
+        USHORT arcount;
     };
+
+    struct DNSQuestion
+    {
+        USHORT qtype;
+        USHORT qclass;
+    };
+#pragma pack(pop)
 
     class DNSClient
     {
