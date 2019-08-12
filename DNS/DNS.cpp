@@ -151,13 +151,18 @@ namespace DNS
 #undef pSubdomain
 #undef pDomain
 
+    void ResolveDomainName(std::string domain, RecordType type)
+    {
+
+    }
+
     class Client
     {
     private:
         const Network::Socket& s;
     public:
         Client(std::string address = "127.0.0.1", Network::PORT port = 0)
-            : s(Network::TcpSocket(address, port))
+            : s(Network::UdpSocket(address, port))
         {
         }
     };
