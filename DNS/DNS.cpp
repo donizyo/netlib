@@ -159,9 +159,10 @@ namespace DNS
         std::istringstream iss(domain);
         std::vector<std::string> results(std::istream_iterator<std::string>{iss},
             std::istream_iterator<std::string>());
+        int idx = 0;
         for (auto part : results)
         {
-            std::cout << part << std::endl;
+            std::cout << ++idx << ' ' << part << std::endl;
         }
     }
 
@@ -188,17 +189,36 @@ namespace DNS
     };
 };
 
+using namespace std::chrono_literals;
+
 int main()
 {
     std::string hostname;
-    std::cout << "Look up domain name: ";
-    std::cin >> hostname;
-    std::cout << "Handling '"
-        << hostname
-        << "' ..."
-        << std::endl;
+    std::condition_variable cv;
+    std::mutex mtx;
 
-    DNS::ResolveDomainName(hostname, DNS::RecordType::RT_A);
+    std::thread producer([&]()
+    {
+        std::cout << "Look up domain name: ";
+        std::cin >> hostname;
+        cv.notify_all();
+    });
+
+    std::thread consumer([&]()
+    {
+        std::unique_lock<std::mutex> lk(mtx);
+
+        while (hostname.empty())
+            cv.wait(lk);
+        std::cout << "Handling '"
+            << hostname
+            << "' ..."
+            << std::endl;
+        DNS::ResolveDomainName(hostname, DNS::RecordType::RT_A);
+    });
+
+    producer.join();
+    consumer.join();
 
     system("pause");
     return 0;

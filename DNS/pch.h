@@ -19,4 +19,10 @@
 #include <iostream>
 #include <sstream>
 
+#include <thread>
+#include <condition_variable>
+#include <mutex>
+#include <chrono>
+#include <queue>
+
 #endif //PCH_H
