@@ -68,7 +68,7 @@ namespace DNS
     };
 
 #pragma pack(push, 1)
-    struct DNSHeader
+    struct Header
     {
         uint16_t id;
 
@@ -88,7 +88,7 @@ namespace DNS
         uint16_t arcount;
     };
 
-    struct DNSQuestion
+    struct Question
     {
         uint16_t qtype;
         uint16_t qclass;
@@ -151,23 +151,23 @@ namespace DNS
 #undef pSubdomain
 #undef pDomain
 
-    class DNSClient
+    class Client
     {
     private:
         const Network::Socket& s;
     public:
-        DNSClient(std::string address = "127.0.0.1", Network::PORT port = 0)
+        Client(std::string address = "127.0.0.1", Network::PORT port = 0)
             : s(Network::TcpSocket(address, port))
         {
         }
     };
 
-    class DNSServer
+    class Server
     {
     private:
         const Network::Socket& s;
     public:
-        DNSServer(std::string address = "0.0.0.0", Network::PORT port = PORT_DNS)
+        Server(std::string address = "0.0.0.0", Network::PORT port = PORT_DNS)
             : s(Network::UdpSocket(address, port))
         {
         }
