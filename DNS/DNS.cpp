@@ -25,9 +25,9 @@ namespace DNS
 #pragma pack(push, 1)
     struct DNSHeader
     {
-        USHORT id;
+        uint16_t id;
 
-        UCHAR rd : 1;
+        uint8_t rd : 1;
         UCHAR tc : 1;
         UCHAR aa : 1;
         UCHAR opcode : 4;
@@ -37,16 +37,16 @@ namespace DNS
         UCHAR z : 3;
         UCHAR ra : 1;
 
-        USHORT qdcount;
-        USHORT ancount;
-        USHORT nscount;
-        USHORT arcount;
+        uint16_t qdcount;
+        uint16_t ancount;
+        uint16_t nscount;
+        uint16_t arcount;
     };
 
     struct DNSQuestion
     {
-        USHORT qtype;
-        USHORT qclass;
+        uint16_t qtype;
+        uint16_t qclass;
     };
 
 // @see: https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-levels-2-and-4-c4200?view=vs-2019
