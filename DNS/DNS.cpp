@@ -9,16 +9,24 @@ namespace DNS
 
     enum RecordType
     {
-        T_A = 1,
-        T_NS = 2,
-        T_CNAME = 5,
-        T_SOA = 6,
-        T_WKS = 11,
-        T_PTR = 12,
-        T_HINFO = 13,
-        T_MINFO = 14,
-        T_MX = 15,
-        T_TXT = 16,
+        // RFC 1035
+        T_A = 1, // a host address
+        T_NS = 2, // an authoritative name server
+        T_MD = 3, // a mail destination (Obsolete - use MX)
+        T_MF = 4, // a mail forwarder (Obsolete - use MX)
+        T_CNAME = 5, // the canonical name for an alias
+        T_SOA = 6, // marks the start of a zone of authority
+        T_MB = 7, // a mailbox domain name (EXPERIMENTAL)
+        T_MG = 8, // a mail group member (EXPERIMENTAL)
+        T_MR = 9, // a mail rename domain name (EXPERIMENTAL)
+        T_NULL = 10, // a null RR (EXPERIMENTAL)
+        T_WKS = 11, // a well known service description
+        T_PTR = 12, // a domain name pointer
+        T_HINFO = 13, // host information
+        T_MINFO = 14, // mailbox or mail list information
+        T_MX = 15, // mail exchange
+        T_TXT = 16, // text strings
+
         T_AAAA = 28,
     };
 
