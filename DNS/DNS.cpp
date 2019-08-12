@@ -47,6 +47,17 @@ namespace DNS
         QT_ALL = 255, // A request for all records
     };
 
+    /*
+    CLASS fields appear in resource records.
+    */
+    enum ClassValue
+    {
+        CV_IN = 1, // the Internet
+        CV_CS = 2, // the CSNET class (Obsolete - used only for examples in some obsolete RFCs)
+        CV_CH = 3, // the CHAOS class
+        CV_HS = 4, // Hesiod [Dyer 87]
+    };
+
 #pragma pack(push, 1)
     struct DNSHeader
     {
