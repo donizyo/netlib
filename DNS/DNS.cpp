@@ -77,6 +77,18 @@ namespace DNS
         return false;
     }
 
+#undef rLetter
+#undef pLetter
+#undef rDigit
+#undef pDigit
+#undef rLetDig
+#undef pLetDig
+#undef rLetDigHyp
+#undef pLdhStr
+#undef pLabel
+#undef pSubdomain
+#undef pDomain
+
     class DNSClient
     {
     private:
