@@ -11,7 +11,7 @@ namespace DNS
     TYPE fields are used in resource records. Note that these types are a
     subset of QTYPEs.
     */
-    enum RecordType
+    enum RecordType : uint8_t
     {
         // RFC 1035
         RT_A = 1, // a host address
