@@ -12,4 +12,7 @@
 // TODO: add headers that you want to pre-compile here
 #include "../LxW/network.h"
 
+#include <regex>
+#include <string>
+
 #endif //PCH_H

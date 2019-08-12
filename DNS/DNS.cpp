@@ -51,6 +51,33 @@ namespace DNS
     };
 #pragma pack(pop)
 
+// <letter> ::= any one of the 52 alphabetic characters A through Z in
+// upper case and a through z in lower case
+#define rLetter     "a-zA-Z"
+#define pLetter     "[" rLetter "]"
+// <digit> ::= any one of the ten digits 0 through 9
+#define rDigit      "0-9"
+#define pDigit      "[" rDigit "]"
+// <let-dig> ::= <letter> | <digit>
+#define rLetDig     rLetter rDigit
+#define pLetDig     "[" rLetDig "]"
+// <let-dig-hyp> ::= <let-dig> | "-"
+#define rLetDigHyp  rLetter rDigit "\-"
+// <ldh-str> ::= <let-dig-hyp> | <let-dig-hyp> <ldh-str>
+#define pLdhStr     "[" rLetDigHyp "]+"
+// <label> ::= <letter> [ [ <ldh-str> ] <let-dig> ]
+#define pLabel      pLetter "(" "(" pLdhStr ")?" pLetDig ")?"
+// <subdomain> ::= <label> | <subdomain> "." <label>
+#define pSubdomain  "(" pLabel "." ")*" pLabel
+// <domain> ::= <subdomain> | " "
+#define pDomain     "(" pSubdomain ")?"
+
+    bool ValidateDomainName(std::string name)
+    {
+        std::regex rgx((pDomain), std::regex_constants::ECMAScript);
+        return false;
+    }
+
     class DNSClient
     {
     private:
