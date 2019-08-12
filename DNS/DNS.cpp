@@ -58,6 +58,15 @@ namespace DNS
         CV_HS = 4, // Hesiod [Dyer 87]
     };
 
+    /*
+    QCLASS fields appear in the question section of a query. QCLASS values
+    are a superset of CLASS values; every CLASS is a valid QCLASS.
+    */
+    enum QuestionClassValue
+    {
+        CV_ANY = 255, // any class
+    };
+
 #pragma pack(push, 1)
     struct DNSHeader
     {
