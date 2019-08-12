@@ -8,6 +8,26 @@ namespace DNS
 {
     const static int PORT_DNS = 53;
 
+    enum RecordType
+    {
+        T_A = 1,
+        T_NS = 2,
+        T_CNAME = 5,
+        T_SOA = 6,
+        T_WKS = 11,
+        T_PTR = 12,
+        T_HINFO = 13,
+        T_MINFO = 14,
+        T_MX = 15,
+        T_TXT = 16,
+        T_AAAA = 28,
+    };
+
+    struct Record
+    {
+
+    };
+
     class DNSClient
     {
     private:
