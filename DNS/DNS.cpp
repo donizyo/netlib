@@ -30,6 +30,15 @@ namespace DNS
         T_AAAA = 28,
     };
 
+    enum QuestionType
+    {
+        // RFC 1035
+        QT_AXFR = 252, // A request for a transfer of an entire zone
+        QT_MAILB = 253, // A request for mailbox-related records (MB, MG or MR)
+        QT_MAILA = 254, // A request for mail agent RRs (Obsolete - see MX)
+        QT_ALL = 255, // A request for all records
+    };
+
 #pragma pack(push, 1)
     struct DNSHeader
     {
