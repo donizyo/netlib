@@ -28,14 +28,14 @@ namespace DNS
         uint16_t id;
 
         uint8_t rd : 1;
-        UCHAR tc : 1;
-        UCHAR aa : 1;
-        UCHAR opcode : 4;
-        UCHAR qr : 1;
+        uint8_t tc : 1;
+        uint8_t aa : 1;
+        uint8_t opcode : 4;
+        uint8_t qr : 1;
 
-        UCHAR rcode : 4;
-        UCHAR z : 3;
-        UCHAR ra : 1;
+        uint8_t rcode : 4;
+        uint8_t z : 3;
+        uint8_t ra : 1;
 
         uint16_t qdcount;
         uint16_t ancount;
