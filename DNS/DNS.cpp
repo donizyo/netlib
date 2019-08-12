@@ -7,6 +7,10 @@ namespace DNS
 {
     const static int PORT_DNS = 53;
 
+    /*
+    TYPE fields are used in resource records. Note that these types are a
+    subset of QTYPEs.
+    */
     enum RecordType
     {
         // RFC 1035
@@ -30,6 +34,10 @@ namespace DNS
         RT_AAAA = 28,
     };
 
+    /*
+    QTYPE fields appear in the question part of a query. QTYPES are a
+    superset of TYPEs, hence all TYPEs are valid QTYPEs.
+    */
     enum QuestionType
     {
         // RFC 1035
