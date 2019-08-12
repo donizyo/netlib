@@ -48,6 +48,17 @@ namespace DNS
         USHORT qtype;
         USHORT qclass;
     };
+
+#pragma warning(disable : 4200)
+    struct ResourceRecord
+    {
+        std::string name;
+        uint16_t type;
+        uint16_t _class;
+        uint32_t ttl;
+        uint16_t data_len;
+        char rdata[];
+    };
 #pragma pack(pop)
 
 // <letter> ::= any one of the 52 alphabetic characters A through Z in
@@ -118,6 +129,7 @@ namespace DNS
 
 int main()
 {
+    DNS::ResourceRecord rr;
     std::cout << "Hello World!\n"; 
 }
 
