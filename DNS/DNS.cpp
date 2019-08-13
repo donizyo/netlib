@@ -170,6 +170,14 @@ namespace DNS
         return labels;
     }
 
+    /*
+    Encodes the given domain name.
+    Example:
+        'www.google.cn' -> '3www6google2cn'
+        where the digits in the encoded domain name stands for the length of the label string as followed;
+        meanwhile the digits should be integer values instead of char values;
+        say, int(3) instead of char('3').
+    */
     const std::string EncodeDomainName(std::string domain)
     {
         const std::deque<std::string> sq = split(domain, '.');
