@@ -25,4 +25,9 @@
 #include <chrono>
 #include <queue>
 
+#if OS == OS_WINDOWS
+#   include <process.h>
+#   define getpid _getpid
+#endif
+
 #endif //PCH_H
