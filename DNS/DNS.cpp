@@ -151,14 +151,27 @@ namespace DNS
 #undef pSubdomain
 #undef pDomain
 
+    const std::deque<std::string> split(const std::string& s, const char delimiter, bool reverse=false)
+    {
+        std::deque<std::string> labels;
+        std::string label;
+        std::istringstream labelStream{ s };
+        while (std::getline(labelStream, label, delimiter))
+        {
+            if (reverse)
+                labels.push_front(label);
+            else
+                labels.push_back(label);
+        }
+        return labels;
+    }
+
     void ResolveDomainName(std::string domain, RecordType type)
     {
         if (domain.empty())
             return;
 
-        std::istringstream iss(domain);
-        std::vector<std::string> results(std::istream_iterator<std::string>{iss},
-            std::istream_iterator<std::string>());
+        std::deque<std::string> results = split(domain, '.', true);
         int idx = 0;
         for (auto part : results)
         {
