@@ -138,7 +138,7 @@ namespace Network
         void Accept();
 
         void Send(std::string text, int flags = 0);
-        void Send(const char buffer[], int length, int flags = 0);
+        void Send(const char* buffer, int length, int flags = 0);
 
         void Receive(std::string& text, int flags);
         void Receive(char* buf, int bufsize, int flags);

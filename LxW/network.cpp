@@ -222,7 +222,7 @@ Send(std::string text, int flags)
 
 void
 Network::Socket::
-Send(const char buffer[], int length, int flags)
+Send(const char* buffer, int length, int flags)
 {
     int nbytes = send(sock, buffer, length, flags);
     if (nbytes == SOCKET_ERROR)
