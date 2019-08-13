@@ -151,6 +151,10 @@ namespace DNS
 #undef pSubdomain
 #undef pDomain
 
+    /*
+    Split the specified string _s_ with a single-character _delimiter_.
+    The labels are put into a deque in the order according to the flag _reverse_.
+    */
     const std::deque<std::string> split(const std::string& s, const char delimiter, bool reverse=false)
     {
         std::deque<std::string> labels;
