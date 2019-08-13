@@ -170,15 +170,17 @@ namespace DNS
         return labels;
     }
 
-    /*
-    Concatenate all the strings in the given deque.
-    */
-    const std::string concat(const std::deque<std::string> sq)
+    const std::string EncodeDomainName(std::string domain)
     {
+        const std::deque<std::string> sq = split(domain, '.');
         std::stringstream ss;
+
         for (auto part : sq)
         {
-            ss << part << '.';
+            auto plen = part.length();
+            plen &= 0xFFu;
+            ss.put(plen); // put a single char, which stands for the length of the label string as followed
+            ss << part; // label strign
         }
         return ss.str();
     }
@@ -188,14 +190,7 @@ namespace DNS
         if (domain.empty())
             return;
 
-        std::deque<std::string> results = split(domain, '.', true);
-        int idx = 0;
-        for (auto part : results)
-        {
-            std::cout << ++idx << ' ' << part << std::endl;
-        }
-
-        std::cout << "Concat: " << concat(results) << std::endl;
+        std::cout << "EncodeDomainName: '" << EncodeDomainName(domain) << "'" << std::endl;
     }
 
     class Client
