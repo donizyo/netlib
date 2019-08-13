@@ -170,6 +170,9 @@ namespace DNS
         return labels;
     }
 
+    /*
+    Concatenate all the strings in the given deque.
+    */
     const std::string concat(const std::deque<std::string> sq)
     {
         std::stringstream ss;
