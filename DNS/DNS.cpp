@@ -166,6 +166,16 @@ namespace DNS
         return labels;
     }
 
+    const std::string concat(const std::deque<std::string> sq)
+    {
+        std::stringstream ss;
+        for (auto part : sq)
+        {
+            ss << part << '.';
+        }
+        return ss.str();
+    }
+
     void ResolveDomainName(std::string domain, RecordType type)
     {
         if (domain.empty())
@@ -177,6 +187,8 @@ namespace DNS
         {
             std::cout << ++idx << ' ' << part << std::endl;
         }
+
+        std::cout << "Concat: " << concat(results) << std::endl;
     }
 
     class Client
