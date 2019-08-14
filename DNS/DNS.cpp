@@ -193,14 +193,15 @@ namespace DNS
         return ss.str();
     }
 
+    template<class _SocketType>
     class Client
     {
-    private:
+    protected:
         const Network::Socket& s;
         std::vector<std::string> forwarders;
     public:
         Client(std::string address = "127.0.0.1", Network::PORT port = 0)
-            : s(Network::UdpSocket(address, port))
+            : s(_SocketType(address, port))
         {
         }
 
@@ -209,10 +210,16 @@ namespace DNS
             forwarders.push_back(ip);
         }
 
+        virtual void Send(const Header& header) const = 0;
+        virtual void Send(const std::string& str) const = 0;
+    };
+
+    class UdpClient : public Client<Network::UdpSocket>
+    {
+    public:
         void Send(const Header& header) const
         {
-            //s.Send(sizeof(header), (const char*)&header, 0);
-            const static int port = 53;
+            const static Network::PORT port = 53;
             for (auto ip : forwarders)
             {
                 s.SendTo(sizeof(header), (const char*)&header, 0, ip, port);
@@ -221,20 +228,55 @@ namespace DNS
 
         void Send(const std::string& str) const
         {
-            s.Send(str.length(), str.c_str(), 0);
+            const static Network::PORT port = 53;
+            for (auto ip : forwarders)
+            {
+                s.SendTo(str.length(), str.c_str(), 0, ip, port);
+            }
         }
     };
 
+    class TcpClient : public Client<Network::TcpSocket>
+    {
+    public:
+        void Send(const Header& header) const
+        {
+            const static Network::PORT port = 53;
+            for (auto ip : forwarders)
+            {
+                s.Connect(ip, port);
+                s.Send(sizeof(header), (const char*)&header, 0);
+            }
+        }
+
+        void Send(const std::string& str) const
+        {
+            const static Network::PORT port = 53;
+            for (auto ip : forwarders)
+            {
+                s.Connect(ip, port);
+                s.Send(str.length(), str.c_str(), 0);
+            }
+        }
+    };
+
+    template<class _SocketType>
     class Server
     {
     private:
         const Network::Socket& s;
     public:
         Server(std::string address = "0.0.0.0", Network::PORT port = PORT_DNS)
-            : s(Network::UdpSocket(address, port))
+            : s(_SocketType(address, port))
         {
         }
     };
+
+    class UdpServer : public Server<Network::UdpSocket>
+    {};
+
+    class TcpServer : public Server<Network::TcpSocket>
+    {};
 
     void ResolveDomainName(std::string domain, RecordType type)
     {
@@ -251,7 +293,7 @@ namespace DNS
 
         std::string encodedDomain = EncodeDomainName(domain);
 
-        Client client;
+        UdpClient client;
 
         client.AddForwarder("8.8.8.8");
 
