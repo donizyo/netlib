@@ -214,7 +214,7 @@ namespace DNS
             s.Send(sizeof(header), (const char*)&header, 0);
         }
 
-        void Send(const std::string str) const
+        void Send(const std::string& str) const
         {
             s.Send(str.length(), str.c_str(), 0);
         }
