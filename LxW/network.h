@@ -145,6 +145,7 @@ namespace Network
         const SOCKET& GetHandle() const;
 
         void Connect(std::string address, PORT port) const;
+        void Disconnect() const;
 
         void Listen() const;
 

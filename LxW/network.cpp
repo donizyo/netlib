@@ -181,6 +181,16 @@ Connect(std::string address, Network::PORT port) const
 
 void
 Network::Socket::
+Disconnect() const
+{
+    if (shutdown(sock, static_cast<int>(Network::Shutdown::Both)) == SOCKET_ERROR)
+    {
+        HandleError("Network::Socket::Disconnect");
+    }
+}
+
+void
+Network::Socket::
 Listen() const
 {
     /*
