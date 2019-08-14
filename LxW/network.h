@@ -159,6 +159,8 @@ namespace Network
         void Receive(std::string& text, int flags);
         void Receive(char* buf, int bufsize, int flags);
 
+        void ReceiveFrom(int length, char* buffer, int flags, std::string ip, PORT port) const;
+
         void Select();
 
         class SocketStream

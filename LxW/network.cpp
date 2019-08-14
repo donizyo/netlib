@@ -276,6 +276,20 @@ Receive(char* buf, int bufsize, int flags)
 
 void
 Network::Socket::
+ReceiveFrom(int length, char* buffer, int flags, std::string ip, PORT port) const
+{
+    sockaddr_in name = { 0 };
+    int namelen;
+    HandleIPAddress(static_cast<int>(af), ip.c_str(), port, &name);
+    int nbytes = recvfrom(sock, buffer, length, flags, (sockaddr*)&name, &namelen);
+    if (nbytes == SOCKET_ERROR)
+    {
+        HandleError("Network::Socket::ReceiveFrom");
+    }
+}
+
+void
+Network::Socket::
 Select()
 {
     fd_set master;
