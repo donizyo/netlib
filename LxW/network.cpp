@@ -346,8 +346,6 @@ public:
     }
 };
 
-#include <mutex>
-
 class SocketOutputBuffer : public StreamBuffer
 {
 private:
