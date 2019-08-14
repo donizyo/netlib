@@ -211,7 +211,12 @@ namespace DNS
 
         void Send(const Header& header) const
         {
-            s.Send(sizeof(header), (const char*)&header, 0);
+            //s.Send(sizeof(header), (const char*)&header, 0);
+            const static int port = 53;
+            for (auto ip : forwarders)
+            {
+                s.SendTo(sizeof(header), (const char*)&header, 0, ip, port);
+            }
         }
 
         void Send(const std::string& str) const
