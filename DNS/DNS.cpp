@@ -207,6 +207,11 @@ namespace DNS
         {
             s.Send(sizeof(header), (const char*)&header, 0);
         }
+
+        void Send(const std::string str) const
+        {
+            s.Send(str.length(), str.c_str(), 0);
+        }
     };
 
     class Server
@@ -237,6 +242,7 @@ namespace DNS
 
         Client client;
         client.Send(header);
+        client.Send(encodedDomain);
     }
 };
 
