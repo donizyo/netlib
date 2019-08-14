@@ -233,6 +233,19 @@ Send(int length, const char* buffer, int flags) const
 
 void
 Network::Socket::
+SendTo(int length, const char* buffer, int flags, std::string ip, int port) const
+{
+    sockaddr_in name = { 0 };
+    HandleIPAddress(static_cast<int>(af), ip.c_str(), port, &name);
+    int nbytes = sendto(sock, buffer, length, flags, (sockaddr*)&name, sizeof(name));
+    if (nbytes == SOCKET_ERROR)
+    {
+        HandleError("Network::Socket::SendTo");
+    }
+}
+
+void
+Network::Socket::
 Receive(std::string& text, int flags)
 {
     char recvbuf[RECV_BUFSIZE];
