@@ -205,8 +205,7 @@ namespace DNS
 
         void Send(const Header& header)
         {
-            const char* hddat = (const char*)(&header);
-            s.Send(sizeof(header), hddat, 0);
+            s.Send(sizeof(header), (const char*)&header, 0);
         }
     };
 
