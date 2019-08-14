@@ -203,7 +203,7 @@ namespace DNS
         {
         }
 
-        void Send(const Header& header)
+        void Send(const Header& header) const
         {
             s.Send(sizeof(header), (const char*)&header, 0);
         }
