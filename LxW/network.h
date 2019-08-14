@@ -140,7 +140,7 @@ namespace Network
         void Send(std::string text, int flags) const;
         void Send(int length, const char* buffer, int flags) const;
 
-        void SendTo(int length, const char* buffer, int flags, std::string ip, int port) const;
+        void SendTo(int length, const char* buffer, int flags, std::string ip, PORT port) const;
 
         void Receive(std::string& text, int flags);
         void Receive(char* buf, int bufsize, int flags);

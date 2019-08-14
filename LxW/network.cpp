@@ -233,7 +233,7 @@ Send(int length, const char* buffer, int flags) const
 
 void
 Network::Socket::
-SendTo(int length, const char* buffer, int flags, std::string ip, int port) const
+SendTo(int length, const char* buffer, int flags, std::string ip, Network::PORT port) const
 {
     sockaddr_in name = { 0 };
     HandleIPAddress(static_cast<int>(af), ip.c_str(), port, &name);
