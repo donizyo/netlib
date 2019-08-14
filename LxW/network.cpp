@@ -5,7 +5,7 @@
 
 #define RECV_BUFSIZE    4096
 
-void CloseSocket(SOCKET s);
+void CloseSocket(SOCKET s, Network::Shutdown how);
 void HandleError(std::string func_name);
 
 #if OS == OS_WINDOWS
@@ -135,7 +135,7 @@ NewSocket(int af, int type, int protocol, const char * addr, int port)
     return s;
 
 error:
-    CloseSocket(s);
+    CloseSocket(s, Network::Shutdown::Send);
     return INVALID_SOCKET;
 }
 
@@ -155,7 +155,7 @@ Network::Socket::
 {
     if (sock != INVALID_SOCKET)
     {
-        CloseSocket(sock);
+        CloseSocket(sock, Network::Shutdown::Both);
         sock = INVALID_SOCKET;
     }
 }
@@ -380,8 +380,9 @@ using SocketOutputStream = SocketStreamEx<std::basic_ostream<char>, SocketOutput
 #endif
 
 void
-CloseSocket(SOCKET s)
+CloseSocket(SOCKET s, Network::Shutdown how)
 {
+    shutdown(s, static_cast<int>(how));
 #if OS == OS_WINDOWS
     closesocket(s);
 #elif OS == OS_LINUX

@@ -115,6 +115,19 @@ namespace Network
         Raw = SOCK_RAW,
     };
 
+    enum Shutdown
+    {
+#if OS == OS_WINDOWS
+        Read = SD_RECEIVE,
+        Send = SD_SEND,
+        Both = SD_BOTH,
+#else /*OS_LINUX*/
+        Read = SHUT_RD,
+        Send = SHUT_WR,
+        Both = SHUT_RDWR,
+#endif
+    };
+
     using PORT = std::int16_t;
 
     class DllExport Socket
