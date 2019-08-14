@@ -11,6 +11,7 @@
 
 // TODO: add headers that you want to pre-compile here
 #include "../LxW/network.h"
+#pragma comment(lib, "../Debug/LxW.lib")
 
 #include <cstdlib>
 #include <regex>
