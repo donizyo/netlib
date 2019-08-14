@@ -197,10 +197,16 @@ namespace DNS
     {
     private:
         const Network::Socket& s;
+        std::vector<std::string> forwarders;
     public:
         Client(std::string address = "127.0.0.1", Network::PORT port = 0)
             : s(Network::UdpSocket(address, port))
         {
+        }
+
+        void AddForwarder(const std::string& ip)
+        {
+            forwarders.push_back(ip);
         }
 
         void Send(const Header& header) const
