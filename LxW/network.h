@@ -131,14 +131,14 @@ namespace Network
 
         const SOCKET& GetHandle() const;
 
-        void Connect(std::string address, PORT port);
+        void Connect(std::string address, PORT port) const;
 
-        void Listen();
+        void Listen() const;
 
-        void Accept();
+        void Accept() const;
 
-        void Send(std::string text, int flags);
-        void Send(const char* buffer, int length, int flags);
+        void Send(std::string text, int flags) const;
+        void Send(int length, const char* buffer, int flags) const;
 
         void Receive(std::string& text, int flags);
         void Receive(char* buf, int bufsize, int flags);

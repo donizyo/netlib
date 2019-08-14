@@ -169,7 +169,7 @@ GetHandle() const
 
 void
 Network::Socket::
-Connect(std::string address, Network::PORT port)
+Connect(std::string address, Network::PORT port) const
 {
     sockaddr_in name = { 0 };
     HandleIPAddress(af, address.c_str(), port, &name);
@@ -181,7 +181,7 @@ Connect(std::string address, Network::PORT port)
 
 void
 Network::Socket::
-Listen()
+Listen() const
 {
     /*
     The maximum length of the queue of pending connections.
@@ -202,7 +202,7 @@ Listen()
 
 void
 Network::Socket::
-Accept()
+Accept() const
 {
     sockaddr_in addr = { 0 };
     int addrlen;
@@ -215,14 +215,14 @@ Accept()
 
 void
 Network::Socket::
-Send(std::string text, int flags)
+Send(std::string text, int flags) const
 {
-    Send(text.c_str(), text.length(), flags);
+    Send(text.length(), text.c_str(), flags);
 }
 
 void
 Network::Socket::
-Send(const char* buffer, int length, int flags)
+Send(int length, const char* buffer, int flags) const
 {
     int nbytes = send(sock, buffer, length, flags);
     if (nbytes == SOCKET_ERROR)

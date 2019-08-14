@@ -185,20 +185,12 @@ namespace DNS
 
         for (auto part : sq)
         {
-            auto plen = part.length();
+            int plen = part.length();
             plen &= 0xFFu;
             ss.put(plen); // put a single char, which stands for the length of the label string as followed
             ss << part; // label strign
         }
         return ss.str();
-    }
-
-    void ResolveDomainName(std::string domain, RecordType type)
-    {
-        if (domain.empty())
-            return;
-
-        std::cout << "EncodeDomainName: '" << EncodeDomainName(domain) << "'" << std::endl;
     }
 
     class Client
@@ -209,6 +201,12 @@ namespace DNS
         Client(std::string address = "127.0.0.1", Network::PORT port = 0)
             : s(Network::UdpSocket(address, port))
         {
+        }
+
+        void Send(const Header& header)
+        {
+            const char* hddat = (const char*)(&header);
+            s.Send(sizeof(header), hddat, 0);
         }
     };
 
@@ -222,6 +220,24 @@ namespace DNS
         {
         }
     };
+
+    void ResolveDomainName(std::string domain, RecordType type)
+    {
+        if (domain.empty())
+            return;
+
+        Header header = { 0 };
+        // get process id
+        int pid = getpid();
+        pid &= 0xFFFFu;
+        header.id = htons(pid);
+        header.rd = 1;
+        header.qdcount = htons(1);
+
+        std::string encodedDomain = EncodeDomainName(domain);
+
+        //Client client;
+    }
 };
 
 using namespace std::chrono_literals;
