@@ -247,6 +247,9 @@ namespace DNS
         std::string encodedDomain = EncodeDomainName(domain);
 
         Client client;
+
+        client.AddForwarder("8.8.8.8");
+
         client.Send(header);
         client.Send(encodedDomain);
     }
