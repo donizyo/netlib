@@ -10,8 +10,10 @@
 #define PCH_H
 
 // TODO: add headers that you want to pre-compile here
-#include "../LxW/network.h"
-#pragma comment(lib, "../Debug/LxW.lib")
+#ifdef _DEBUG
+#   include "../LxW/network.h"
+#   pragma comment(lib, "../Debug/LxW.lib")
+#endif
 
 #include <cstdlib>
 #include <regex>
