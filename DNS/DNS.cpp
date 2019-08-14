@@ -235,7 +235,8 @@ namespace DNS
 
         std::string encodedDomain = EncodeDomainName(domain);
 
-        //Client client;
+        Client client;
+        client.Send(header);
     }
 };
 
