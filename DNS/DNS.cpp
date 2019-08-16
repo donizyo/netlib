@@ -193,6 +193,9 @@ namespace DNS
     */
     const std::string EncodeDomainName(std::string domain)
     {
+        if (domain.empty())
+            return domain;
+
         const std::deque<std::string> sq = split(domain, '.');
         std::stringstream ss;
 
