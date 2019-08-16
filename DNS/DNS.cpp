@@ -218,15 +218,19 @@ namespace DNS
         std::ostringstream oss;
         for (char c; iss >> c;)
         {
-            if (isdigit(c))
+            if (0 <= c && c <= 9)
             {
                 std::streamoff pos = iss.tellg();
                 int len = (int)c;
                 oss << '.'
                     << domain.substr((int)(pos & 0xFFFFFFFFu), len);
+                iss.seekg(pos + len);
             }
         }
-        return oss.str().substr(1);
+        std::string res = oss.str();
+        if (!res.empty())
+            res = res.substr(1);
+        return res;
     }
 
     template<class _SocketType>
@@ -365,7 +369,7 @@ int main()
             << " -> "
             << encoded
             << " -> "
-            //<< DNS::DecodeDomainName(encoded)
+            << DNS::DecodeDomainName(encoded)
             << "' ..."
             << std::endl;
         //DNS::ResolveDomainName(hostname, DNS::RecordType::RT_A);
