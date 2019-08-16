@@ -67,6 +67,19 @@ namespace DNS
         CV_ANY = 255, // any class
     };
 
+    // 4. Messages
+    // 4.1. Format
+    // +---------------------+
+    // | Header              |
+    // +---------------------+
+    // | Question            | the question for the name server
+    // +---------------------+
+    // | Answer              | RRs answering the question
+    // +---------------------+
+    // | Authority           | RRs pointing toward an authority
+    // +---------------------+
+    // | Additional          | RRs holding additional information
+    // +---------------------+
 #pragma pack(push, 1)
     struct Header
     {
@@ -191,6 +204,26 @@ namespace DNS
             ss << part; // label strign
         }
         return ss.str();
+    }
+
+    const std::string DecodeDomainName(std::string domain)
+    {
+        if (domain.empty())
+            return domain;
+
+        std::istringstream iss{ domain };
+        std::ostringstream oss;
+        for (char c; iss >> c;)
+        {
+            if (isdigit(c))
+            {
+                std::streamoff pos = iss.tellg();
+                int len = (int)c;
+                oss << '.'
+                    << domain.substr((int)(pos & 0xFFFFFFFFu), len);
+            }
+        }
+        return oss.str().substr(1);
     }
 
     template<class _SocketType>
@@ -323,11 +356,16 @@ int main()
 
         while (hostname.empty())
             cv.wait(lk);
+        auto encoded = DNS::EncodeDomainName(hostname);
         std::cout << "Handling '"
             << hostname
+            << " -> "
+            << encoded
+            << " -> "
+            //<< DNS::DecodeDomainName(encoded)
             << "' ..."
             << std::endl;
-        DNS::ResolveDomainName(hostname, DNS::RecordType::RT_A);
+        //DNS::ResolveDomainName(hostname, DNS::RecordType::RT_A);
     });
 
     producer.join();

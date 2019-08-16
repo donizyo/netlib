@@ -70,6 +70,8 @@ typedef struct sockaddr SOCKADDR;
 #   define TCP_BUFFER_CAPACITY 65536
 #endif
 
+#define NTOHS(d) (d = ntohs(d))
+
 typedef SOCKET * SOCKPTR;
 
 int InitNetwork();
