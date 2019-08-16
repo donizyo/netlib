@@ -363,13 +363,8 @@ int main()
 
         while (hostname.empty())
             cv.wait(lk);
-        auto encoded = DNS::EncodeDomainName(hostname);
         std::cout << "Handling '"
             << hostname
-            << " -> "
-            << encoded
-            << " -> "
-            << DNS::DecodeDomainName(encoded)
             << "' ..."
             << std::endl;
         //DNS::ResolveDomainName(hostname, DNS::RecordType::RT_A);
