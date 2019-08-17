@@ -136,8 +136,8 @@ namespace Network
     {
     private:
         SOCKET sock;
-        const int& af;
-        const int& type;
+        int af;
+        int type;
     public:
         Socket() = delete;
         Socket(const Socket &) = delete;

@@ -144,7 +144,7 @@ HandleIPAddress(_In_ const int& af, _In_ const char * addr, _In_ const Network::
 void
 HandleIPAddress(_In_ const int& af, _In_ const std::string& addr, _In_ const Network::PORT& port, _Out_ sockaddr_in& name)
 {
-    HandleIPAddress(static_cast<int>(af), addr.c_str(), port, name);
+    HandleIPAddress(af, addr.c_str(), port, name);
 }
 
 SOCKET
@@ -222,7 +222,7 @@ Network::Socket::
 Connect(_In_ const std::string& address, _In_ const PORT& port) const
 {
     sockaddr_in name = { 0 };
-    HandleIPAddress(static_cast<int>(af), address.c_str(), port, name);
+    HandleIPAddress(af, address.c_str(), port, name);
     if (connect(sock, (SOCKADDR *)&name, sizeof(name)) != 0)
     {
         HandleError("Network::Socket::Connect");
