@@ -80,7 +80,7 @@ EndNetwork()
 #endif
 
 void
-HandleIPAddress(int af, const char * addr, int port, sockaddr_in * name)
+HandleIPAddress(int af, const char * addr, int port, sockaddr_in& name)
 {
     switch (af)
     {
@@ -109,14 +109,7 @@ HandleIPAddress(int af, const char * addr, int port, sockaddr_in * name)
         throw 1;
     }
 
-    if (name == nullptr)
-    {
-        std::cerr << "Invalid parameter 'name': null"
-            << std::endl;
-        throw 1;
-    }
-
-    switch (inet_pton(af, addr, &name->sin_addr))
+    switch (inet_pton(af, addr, &(name.sin_addr)))
     {
     case 1:
         // success
@@ -128,6 +121,7 @@ HandleIPAddress(int af, const char * addr, int port, sockaddr_in * name)
             << std::endl;
         throw 1;
     case -1:
+        HandleError("HandleIPAddress");
         std::cerr << "ERR @ inet_pton"
             << std::endl;
         throw 1;
@@ -158,7 +152,7 @@ NewSocket(int af, int type, int protocol, const char * addr, int port)
     if (addr == NULL)
         addr = "127.0.0.1";
 
-    HandleIPAddress(af, addr, port, &addr_in);
+    HandleIPAddress(af, addr, port, addr_in);
 
     if (bind(s, (SOCKADDR *)&addr_in, sizeof(addr_in)) == SOCKET_ERROR)
     {
@@ -206,7 +200,7 @@ Network::Socket::
 Connect(std::string address, Network::PORT port) const
 {
     sockaddr_in name = { 0 };
-    HandleIPAddress(af, address.c_str(), port, &name);
+    HandleIPAddress(static_cast<int>(af), address.c_str(), port, name);
     if (connect(sock, (SOCKADDR *)&name, sizeof(name)) != 0)
     {
         HandleError("Network::Socket::Connect");
@@ -280,7 +274,7 @@ Network::Socket::
 SendTo(int length, const char* buffer, int flags, std::string ip, Network::PORT port) const
 {
     sockaddr_in name = { 0 };
-    HandleIPAddress(static_cast<int>(af), ip.c_str(), port, &name);
+    HandleIPAddress(static_cast<int>(af), ip.c_str(), port, name);
     int nbytes = sendto(sock, buffer, length, flags, (sockaddr*)&name, sizeof(name));
     if (nbytes == SOCKET_ERROR)
     {
@@ -314,7 +308,7 @@ ReceiveFrom(int length, char* buffer, int flags, std::string ip, PORT port) cons
 {
     sockaddr_in name = { 0 };
     int namelen;
-    HandleIPAddress(static_cast<int>(af), ip.c_str(), port, &name);
+    HandleIPAddress(static_cast<int>(af), ip.c_str(), port, name);
     int nbytes = recvfrom(sock, buffer, length, flags, (sockaddr*)&name, &namelen);
     if (nbytes == SOCKET_ERROR)
     {
