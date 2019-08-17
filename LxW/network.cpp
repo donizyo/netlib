@@ -129,6 +129,11 @@ HandleIPAddress(int af, const char * addr, int port, sockaddr_in& name)
     name.sin_family = af;
     name.sin_port = htons(port);
 }
+void
+HandleIPAddress(Network::AddressFamily af, std::string addr, int port, sockaddr_in& name)
+{
+    HandleIPAddress(static_cast<int>(af), addr.c_str(), port, name);
+}
 
 SOCKET
 NewSocket(int af, int type, int protocol, const char * addr, int port)
