@@ -370,14 +370,14 @@ int main()
     std::condition_variable cv;
     std::mutex mtx;
 
-    std::thread producer([&]()
+    std::thread producer([&hostname,&cv]()
     {
         std::cout << "Look up domain name: ";
         std::cin >> hostname;
         cv.notify_all();
     });
 
-    std::thread consumer([&]()
+    std::thread consumer([&mtx,&hostname,&cv]()
     {
         std::unique_lock<std::mutex> lk(mtx);
 
