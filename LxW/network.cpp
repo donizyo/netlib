@@ -126,8 +126,8 @@ HandleIPAddress(int af, const char * addr, int port, sockaddr_in& name)
             << std::endl;
         throw 1;
     }
-    name->sin_family = af;
-    name->sin_port = htons(port);
+    name.sin_family = af;
+    name.sin_port = htons(port);
 }
 
 SOCKET
