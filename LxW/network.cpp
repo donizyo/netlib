@@ -328,15 +328,6 @@ Network::TcpSocket::
 {
 }
 
-Network::Socket::SocketStream
-Network::TcpSocket::
-GetInputStream() const
-{
-    Network::Socket::SocketStream stream(*const_cast<TcpSocket*>(this));
-
-    return stream;
-}
-
 Network::UdpSocket::
 UdpSocket(std::string address, Network::PORT port)
     : Socket(Network::AddressFamily::IPv4, Network::SocketType::Datagram, address, port)
@@ -350,7 +341,7 @@ Network::UdpSocket::
 
 using SocketStream = Network::Socket::SocketStream;
 #include <mutex>
-class StreamBuffer : std::basic_streambuf<char>
+class StreamBuffer : public std::basic_streambuf<char>
 {
 private:
     std::mutex mtx;
@@ -392,7 +383,7 @@ public:
 
 template<class _StreamType, class _BufferType>
 class SocketStreamEx
-    : SocketStream
+    : public SocketStream
     , _StreamType
 {
 private:
@@ -410,6 +401,16 @@ public:
 
 using SocketInputStream = SocketStreamEx<std::basic_istream<char>, SocketInputBuffer>;
 using SocketOutputStream = SocketStreamEx<std::basic_ostream<char>, SocketOutputBuffer>;
+
+
+Network::Socket::SocketStream
+Network::TcpSocket::
+GetInputStream() const
+{
+    SocketInputStream stream(*const_cast<TcpSocket*>(this));
+
+    return stream;
+}
 #endif
 
 void
