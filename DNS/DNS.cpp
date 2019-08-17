@@ -262,6 +262,9 @@ namespace DNS
             const static Network::PORT port = 53;
             for (auto ip : forwarders)
             {
+                std::cout << "DNS> Try to reach IP - "
+                    << ip
+                    << std::endl;
                 s.SendTo(sizeof(header), (const char*)&header, 0, ip, port);
             }
         }
@@ -271,6 +274,9 @@ namespace DNS
             const static Network::PORT port = 53;
             for (auto ip : forwarders)
             {
+                std::cout << "DNS> Try to reach IP - "
+                    << ip
+                    << std::endl;
                 s.SendTo(str.length(), str.c_str(), 0, ip, port);
             }
         }
@@ -284,6 +290,9 @@ namespace DNS
             const static Network::PORT port = 53;
             for (auto ip : forwarders)
             {
+                std::cout << "DNS> Try to reach IP - "
+                    << ip
+                    << std::endl;
                 s.Connect(ip, port);
                 s.Send(sizeof(header), (const char*)&header, 0);
             }
@@ -294,6 +303,9 @@ namespace DNS
             const static Network::PORT port = 53;
             for (auto ip : forwarders)
             {
+                std::cout << "DNS> Try to reach IP - "
+                    << ip
+                    << std::endl;
                 s.Connect(ip, port);
                 s.Send(str.length(), str.c_str(), 0);
             }
