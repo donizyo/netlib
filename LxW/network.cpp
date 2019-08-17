@@ -82,6 +82,19 @@ EndNetwork()
 void
 HandleIPAddress(int af, const char * addr, int port, sockaddr_in * name)
 {
+    switch (af)
+    {
+    case AF_INET:
+        break;
+    case AF_INET6:
+        break;
+    default:
+        std::cerr << "Invalid parameter 'af': "
+            << af
+            << std::endl;
+        throw 1;
+    }
+
     switch (inet_pton(af, addr, &name->sin_addr))
     {
     case 1:
