@@ -136,32 +136,32 @@ namespace Network
     {
     private:
         SOCKET sock;
-        AddressFamily af;
-        SocketType type;
+        const AddressFamily& af;
+        const SocketType& type;
     public:
         Socket() = delete;
         Socket(const Socket &) = delete;
-        Socket(AddressFamily af, SocketType type, std::string address, PORT port);
+        Socket(_In_ const AddressFamily& af, _In_ const SocketType& type, _In_ const std::string& address, _In_ const PORT& port);
         ~Socket();
 
         const SOCKET& GetHandle() const;
 
-        void Connect(std::string address, PORT port) const;
+        void Connect(_In_ const std::string& address, _In_ const PORT& port) const;
         void Disconnect() const;
 
         void Listen() const;
 
         void Accept() const;
 
-        void Send(std::string text, int flags) const;
-        void Send(int length, const char* buffer, int flags) const;
+        void Send(_In_ const std::string& text, _In_ const int flags) const;
+        void Send(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags) const;
 
-        void SendTo(int length, const char* buffer, int flags, std::string ip, PORT port) const;
+        void SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT& port) const;
 
-        void Receive(std::string& text, int flags);
-        void Receive(char* buf, int bufsize, int flags);
+        void Receive(_Out_ std::string& text, _In_ const int flags);
+        void Receive(_In_ const int bufsize, _Out_writes_bytes_all_(bufsize) char* buf, _In_ const int flags);
 
-        void ReceiveFrom(int length, char* buffer, int flags, std::string ip, PORT port) const;
+        void ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT& port) const;
 
         void Select();
 
@@ -170,19 +170,19 @@ namespace Network
         protected:
             Socket& parent;
         public:
-            SocketStream(Socket& s);
+            SocketStream(_In_ Socket& s);
             SocketStream() = delete;
-            SocketStream(const SocketStream&) = default;
+            SocketStream(_In_ const SocketStream&) = default;
         };
     public:
-        static void Select(int nfds, fd_set* rfds, fd_set* wfds, fd_set* efds, const timeval* timeout);
+        static void Select(_In_ const int nfds, _Inout_updates_bytes_all_opt_(nfds) fd_set* rfds, _Inout_updates_bytes_all_opt_(nfds) fd_set* wfds, _Inout_updates_bytes_all_opt_(nfds) fd_set* efds, _In_reads_bytes_opt_(nfds) const timeval* timeout);
     };
 
 
     class DllExport TcpSocket : public Socket
     {
     public:
-        TcpSocket(std::string address, PORT port);
+        TcpSocket(_In_ const std::string& address, _In_ const PORT& port);
         ~TcpSocket();
 
         Socket::SocketStream GetInputStream() const;
@@ -192,7 +192,7 @@ namespace Network
     class DllExport UdpSocket : public Socket
     {
     public:
-        UdpSocket(std::string address, PORT port);
+        UdpSocket(_In_ const std::string& address, _In_ const PORT& port);
         ~UdpSocket();
     };
 }
