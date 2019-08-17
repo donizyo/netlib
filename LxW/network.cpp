@@ -14,6 +14,8 @@ WSADATA wsaData;
 int
 InitNetwork()
 {
+    std::clog << "WSA> Start up ..." << std::endl;
+
     memset(&wsaData, 0, sizeof(wsaData));
 
     WORD wVersionRequested = MAKEWORD(2, 2);
@@ -52,6 +54,8 @@ InitNetwork()
 int
 EndNetwork()
 {
+    std::clog << "WSA> Clean up ..." << std::endl;
+
     WSACleanup();
     return 0;
 }
