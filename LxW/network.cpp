@@ -109,6 +109,13 @@ HandleIPAddress(int af, const char * addr, int port, sockaddr_in * name)
         throw 1;
     }
 
+    if (name == nullptr)
+    {
+        std::cerr << "Invalid parameter 'name': null"
+            << std::endl;
+        throw 1;
+    }
+
     switch (inet_pton(af, addr, &name->sin_addr))
     {
     case 1:
