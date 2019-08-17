@@ -279,7 +279,7 @@ Network::Socket::
 SendTo(int length, const char* buffer, int flags, std::string ip, Network::PORT port) const
 {
     sockaddr_in name = { 0 };
-    HandleIPAddress(static_cast<int>(af), ip.c_str(), port, name);
+    HandleIPAddress(af, ip, port, name);
     int nbytes = sendto(sock, buffer, length, flags, (sockaddr*)&name, sizeof(name));
     if (nbytes == SOCKET_ERROR)
     {
@@ -313,7 +313,7 @@ ReceiveFrom(int length, char* buffer, int flags, std::string ip, PORT port) cons
 {
     sockaddr_in name = { 0 };
     int namelen;
-    HandleIPAddress(static_cast<int>(af), ip.c_str(), port, name);
+    HandleIPAddress(af, ip, port, name);
     int nbytes = recvfrom(sock, buffer, length, flags, (sockaddr*)&name, &namelen);
     if (nbytes == SOCKET_ERROR)
     {
