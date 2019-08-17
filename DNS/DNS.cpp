@@ -338,7 +338,7 @@ namespace DNS
     class TcpServer : public Server<Network::TcpSocket>
     {};
 
-    void ResolveDomainName(std::string domain, RecordType type)
+    void ResolveDomainName(_In_ const std::string& domain, RecordType type)
     {
         if (domain.empty())
             return;
