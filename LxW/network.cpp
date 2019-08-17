@@ -480,6 +480,10 @@ CloseSocket(SOCKET s, Network::Shutdown how)
 
 #include <sstream>
 
+/*
+Print the name of buggy function and error code.
+@see: https://docs.microsoft.com/zh-cn/windows/win32/winsock/windows-sockets-error-codes-2
+*/
 void
 HandleError(std::string func_name)
 {
