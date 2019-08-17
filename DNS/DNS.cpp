@@ -240,15 +240,15 @@ namespace DNS
         const Network::Socket& s;
         std::vector<std::string> forwarders;
     public:
-        Client(const std::string& address, const Network::PORT& port)
+        Client(_In_ const std::string& address, _In_ const Network::PORT& port)
             : s(_SocketType(address, port))
         {
         }
 
         Client() = delete;
-        Client(const Client&) = delete;
+        Client(_In_ const Client&) = delete;
 
-        void AddForwarder(const std::string& ip)
+        void AddForwarder(_In_ const std::string& ip)
         {
             forwarders.push_back(ip);
         }
