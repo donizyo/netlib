@@ -85,7 +85,6 @@ HandleIPAddress(int af, const char * addr, int port, sockaddr_in * name)
     switch (af)
     {
     case AF_INET:
-        break;
     case AF_INET6:
         break;
     default:
