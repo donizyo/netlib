@@ -92,7 +92,7 @@ EndNetwork()
 #endif
 
 void
-HandleIPAddress(_In_ const int& af, _In_ const char * addr, _In_ const Network::PORT& port, _Out_ sockaddr_in& name)
+HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT& port, _Out_ sockaddr_in& name)
 {
     switch (af)
     {
@@ -101,7 +101,9 @@ HandleIPAddress(_In_ const int& af, _In_ const char * addr, _In_ const Network::
         break;
     default:
         std::cerr << "Invalid parameter 'af': "
+            << std::hex
             << af
+            << std::dec
             << std::endl;
         throw 1;
     }
@@ -142,18 +144,13 @@ HandleIPAddress(_In_ const int& af, _In_ const char * addr, _In_ const Network::
     name.sin_port = htons(port);
 }
 void
-HandleIPAddress(_In_ const int& af, _In_ const std::string& addr, _In_ const Network::PORT& port, _Out_ sockaddr_in& name)
+HandleIPAddress(_In_ int af, _In_ const std::string& addr, _In_ const Network::PORT& port, _Out_ sockaddr_in& name)
 {
     HandleIPAddress(af, addr.c_str(), port, name);
 }
 
 SOCKET
-NewSocket(
-    _In_ const int& af,
-    _In_ const int& type,
-    _In_ const int& protocol,
-    _In_ const char * addr,
-    _In_ const int& port)
+NewSocket(_In_ int af, _In_ int type, _In_ int protocol, _In_ const char * addr, _In_ int port)
 {
     // Windows:
     // If no error occurs, socket returns a descriptor referencing the new socket.
