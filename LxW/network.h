@@ -74,8 +74,8 @@ typedef struct sockaddr SOCKADDR;
 
 typedef SOCKET * SOCKPTR;
 
-int InitNetwork();
-int EndNetwork();
+int DllExport InitNetwork();
+int DllExport EndNetwork();
 
 namespace Network
 {

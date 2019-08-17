@@ -370,6 +370,8 @@ int main()
     std::condition_variable cv;
     std::mutex mtx;
 
+    InitNetwork();
+
     std::thread producer([&hostname,&cv]()
     {
         std::cout << "Look up domain name: ";
@@ -394,6 +396,8 @@ int main()
     consumer.join();
 
     system("pause");
+    EndNetwork();
+
     return 0;
 }
 
