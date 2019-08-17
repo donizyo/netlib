@@ -10,10 +10,18 @@ void HandleError(std::string func_name);
 
 #if OS == OS_WINDOWS
 WSADATA wsaData;
+std::atomic_bool isInitialized{ false };
 
 int
 InitNetwork()
 {
+    if (isInitialized)
+    {
+        // WSA data already initialized
+        return 1;
+    }
+    isInitialized = true;
+
     std::clog << "WSA> Start up ..." << std::endl;
 
     memset(&wsaData, 0, sizeof(wsaData));
