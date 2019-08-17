@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LxW", "LxW\LxW.vcxproj", "{1F3D0C1B-71FB-4F3C-85A8-63E6052CBA31}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DNS", "DNS\DNS.vcxproj", "{28DED5E4-F729-4583-A1AB-ADC20055BE51}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1F3D0C1B-71FB-4F3C-85A8-63E6052CBA31} = {1F3D0C1B-71FB-4F3C-85A8-63E6052CBA31}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{630F8D8B-AB7B-4468-BCA3-3D57623216D2}"
 	ProjectSection(SolutionItems) = preProject
