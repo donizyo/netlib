@@ -91,7 +91,7 @@ namespace Network
         IPv6 = AF_INET6,
     };
 
-    enum SocketType
+    enum SocketType : int
     {
         /*
         A socket type that provides sequenced, reliable, two-way,
@@ -117,7 +117,7 @@ namespace Network
         Raw = SOCK_RAW,
     };
 
-    enum Shutdown
+    enum Shutdown : int
     {
 #if OS == OS_WINDOWS
         Read = SD_RECEIVE,
