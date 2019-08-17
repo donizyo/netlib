@@ -411,6 +411,15 @@ GetInputStream() const
 
     return stream;
 }
+
+Network::Socket::SocketStream
+Network::TcpSocket::
+GetOutputStream() const
+{
+    SocketOutputStream stream(*const_cast<TcpSocket*>(this));
+
+    return stream;
+}
 #endif
 
 void
