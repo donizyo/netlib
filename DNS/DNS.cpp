@@ -191,7 +191,7 @@ namespace DNS
         meanwhile the digits should be integer values instead of char values;
         say, int(3) instead of char('3').
     */
-    const std::string EncodeDomainName(std::string domain)
+    const std::string EncodeDomainName(_In_ const std::string& domain)
     {
         if (domain.empty())
             return domain;
@@ -209,7 +209,7 @@ namespace DNS
         return ss.str();
     }
 
-    const std::string DecodeDomainName(std::string domain)
+    const std::string DecodeDomainName(_In_ const std::string& domain)
     {
         if (domain.empty())
             return domain;
