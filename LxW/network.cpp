@@ -328,6 +328,15 @@ Network::TcpSocket::
 {
 }
 
+Network::Socket::SocketStream
+Network::TcpSocket::
+GetInputStream() const
+{
+    Network::Socket::SocketStream stream(*const_cast<TcpSocket*>(this));
+
+    return stream;
+}
+
 Network::UdpSocket::
 UdpSocket(std::string address, Network::PORT port)
     : Socket(Network::AddressFamily::IPv4, Network::SocketType::Datagram, address, port)

@@ -171,6 +171,8 @@ namespace Network
             Socket& parent;
         public:
             SocketStream(Socket& s);
+            SocketStream() = delete;
+            SocketStream(const SocketStream&) = default;
         };
     public:
         static void Select(int nfds, fd_set* rfds, fd_set* wfds, fd_set* efds, const timeval* timeout);
@@ -182,6 +184,9 @@ namespace Network
     public:
         TcpSocket(std::string address, PORT port);
         ~TcpSocket();
+
+        Socket::SocketStream GetInputStream() const;
+        Socket::SocketStream GetOutputStream() const;
     };
 
     class DllExport UdpSocket : public Socket
