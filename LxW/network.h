@@ -141,12 +141,12 @@ namespace Network
     public:
         Socket() = delete;
         Socket(const Socket &) = delete;
-        Socket(_In_ const AddressFamily& af, _In_ const SocketType& type, _In_ const std::string& address, _In_ const PORT& port);
+        Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::string& address, _In_ const PORT port);
         ~Socket();
 
         const SOCKET& GetHandle() const;
 
-        void Connect(_In_ const std::string& address, _In_ const PORT& port) const;
+        void Connect(_In_ const std::string& address, _In_ const PORT port) const;
         void Disconnect() const;
 
         void Listen() const;
@@ -156,12 +156,12 @@ namespace Network
         void Send(_In_ const std::string& text, _In_ const int flags) const;
         void Send(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags) const;
 
-        void SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT& port) const;
+        void SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const;
 
         void Receive(_Out_ std::string& text, _In_ const int flags);
         void Receive(_In_ const int bufsize, _Out_writes_bytes_all_(bufsize) char* buf, _In_ const int flags);
 
-        void ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT& port) const;
+        void ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const;
 
         void Select();
 
@@ -182,7 +182,7 @@ namespace Network
     class DllExport TcpSocket : public Socket
     {
     public:
-        TcpSocket(_In_ const std::string& address, _In_ const PORT& port);
+        TcpSocket(_In_ const std::string& address, _In_ const PORT port);
         ~TcpSocket();
 
         Socket::SocketStream GetInputStream() const;
@@ -192,7 +192,7 @@ namespace Network
     class DllExport UdpSocket : public Socket
     {
     public:
-        UdpSocket(_In_ const std::string& address, _In_ const PORT& port);
+        UdpSocket(_In_ const std::string& address, _In_ const PORT port);
         ~UdpSocket();
     };
 }

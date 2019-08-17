@@ -240,7 +240,7 @@ namespace DNS
         const Network::Socket& s;
         std::vector<std::string> forwarders;
     public:
-        Client(_In_ const std::string& address, _In_ const Network::PORT& port)
+        Client(_In_ const std::string& address, _In_ const Network::PORT port)
             : s(_SocketType(address, port))
         {
         }
@@ -260,7 +260,7 @@ namespace DNS
     class UdpClient : public Client<Network::UdpSocket>
     {
     public:
-        UdpClient(const std::string& address, const Network::PORT& port)
+        UdpClient(const std::string& address, const Network::PORT port)
             : Client<Network::UdpSocket>(address, port)
         {
         }

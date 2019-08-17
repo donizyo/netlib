@@ -5,7 +5,7 @@
 
 #define RECV_BUFSIZE    4096
 
-void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown& how);
+void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how);
 void HandleError(std::string func_name);
 
 #if OS == OS_WINDOWS
@@ -92,7 +92,7 @@ EndNetwork()
 #endif
 
 void
-HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT& port, _Out_ sockaddr_in& name)
+HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT port, _Out_ sockaddr_in& name)
 {
     switch (af)
     {
@@ -144,7 +144,7 @@ HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT& p
     name.sin_port = htons(port);
 }
 void
-HandleIPAddress(_In_ int af, _In_ const std::string& addr, _In_ const Network::PORT& port, _Out_ sockaddr_in& name)
+HandleIPAddress(_In_ int af, _In_ const std::string& addr, _In_ const Network::PORT port, _Out_ sockaddr_in& name)
 {
     HandleIPAddress(af, addr.c_str(), port, name);
 }
@@ -189,10 +189,10 @@ error:
 using namespace Network;
 
 Network::Socket::
-Socket(_In_ const AddressFamily& addressFamily, _In_ const SocketType& socketType, _In_ const std::string& address, _In_ const PORT& port)
+Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::string& address, _In_ const PORT port)
     : sock(INVALID_SOCKET)
-    , af(static_cast<int>(addressFamily))
-    , type(static_cast<int>(socketType))
+    , af(static_cast<int>(af))
+    , type(static_cast<int>(type))
 {
     sock = NewSocket(af, type, 0, address.c_str(), port);
 }
@@ -216,7 +216,7 @@ GetHandle() const
 
 void
 Network::Socket::
-Connect(_In_ const std::string& address, _In_ const PORT& port) const
+Connect(_In_ const std::string& address, _In_ const PORT port) const
 {
     sockaddr_in name = { 0 };
     HandleIPAddress(af, address.c_str(), port, name);
@@ -298,7 +298,7 @@ Send(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags) c
 
 void
 Network::Socket::
-SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT& port) const
+SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const
 {
     if (buffer == nullptr)
         return;
@@ -339,7 +339,7 @@ Receive(_In_ const int bufsize, _Out_writes_bytes_all_(bufsize) char* buf, _In_ 
 
 void
 Network::Socket::
-ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT& port) const
+ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const
 {
     sockaddr_in name = { 0 };
     int namelen{ 0 };
@@ -383,7 +383,7 @@ SocketStream(_In_ Socket& s)
 }
 
 Network::TcpSocket::
-TcpSocket(_In_ const std::string& address, _In_ const PORT& port)
+TcpSocket(_In_ const std::string& address, _In_ const PORT port)
     : Socket(Network::AddressFamily::IPv4, Network::SocketType::Stream, address, port)
 {
 }
@@ -394,7 +394,7 @@ Network::TcpSocket::
 }
 
 Network::UdpSocket::
-UdpSocket(_In_ const std::string& address, _In_ const PORT& port)
+UdpSocket(_In_ const std::string& address, _In_ const PORT port)
     : Socket(Network::AddressFamily::IPv4, Network::SocketType::Datagram, address, port)
 {
 }
@@ -488,7 +488,7 @@ GetOutputStream() const
 #endif
 
 void
-CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown& how)
+CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how)
 {
     shutdown(s, static_cast<int>(how));
 #if OS == OS_WINDOWS
