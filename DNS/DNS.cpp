@@ -146,7 +146,7 @@ namespace DNS
     Return: true, if matches;
             false, otherwise.
     */
-    bool ValidateDomainName(std::string name)
+    bool ValidateDomainName(_In_ const std::string& name)
     {
         std::regex rgx((pDomain), std::regex_constants::ECMAScript);
         return std::regex_match(name, rgx);
