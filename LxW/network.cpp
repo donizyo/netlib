@@ -92,11 +92,7 @@ EndNetwork()
 #endif
 
 void
-HandleIPAddress(
-    _In_ const int& af,
-    _In_ const char * addr,
-    _In_ const Network::PORT& port,
-    _Out_ sockaddr_in& name)
+HandleIPAddress(_In_ const int& af, _In_ const char * addr, _In_ const Network::PORT& port, _Out_ sockaddr_in& name)
 {
     switch (af)
     {
@@ -146,11 +142,7 @@ HandleIPAddress(
     name.sin_port = htons(port);
 }
 void
-HandleIPAddress(
-    _In_ const Network::AddressFamily& af,
-    _In_ const std::string& addr,
-    _In_ const Network::PORT& port,
-    _Out_ sockaddr_in& name)
+HandleIPAddress(_In_ const int& af, _In_ const std::string& addr, _In_ const Network::PORT& port, _Out_ sockaddr_in& name)
 {
     HandleIPAddress(static_cast<int>(af), addr.c_str(), port, name);
 }
@@ -202,10 +194,10 @@ using namespace Network;
 Network::Socket::
 Socket(_In_ const AddressFamily& addressFamily, _In_ const SocketType& socketType, _In_ const std::string& address, _In_ const PORT& port)
     : sock(INVALID_SOCKET)
-    , af(addressFamily)
-    , type(socketType)
+    , af(static_cast<int>(addressFamily))
+    , type(static_cast<int>(socketType))
 {
-    sock = NewSocket(static_cast<int>(addressFamily), static_cast<int>(socketType), 0, address.c_str(), port);
+    sock = NewSocket(af, type, 0, address.c_str(), port);
 }
 
 Network::Socket::
