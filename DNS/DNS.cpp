@@ -367,7 +367,7 @@ int main()
             << hostname
             << "' ..."
             << std::endl;
-        //DNS::ResolveDomainName(hostname, DNS::RecordType::RT_A);
+        DNS::ResolveDomainName(hostname, DNS::RecordType::RT_A);
     });
 
     producer.join();
