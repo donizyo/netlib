@@ -79,7 +79,7 @@ int DllExport EndNetwork();
 
 namespace Network
 {
-    enum AddressFamily
+    enum AddressFamily : int
     {
         /*
         The Internet Protocol version 4 (IPv4) address family.
