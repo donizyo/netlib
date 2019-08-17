@@ -168,7 +168,7 @@ namespace DNS
     Split the specified string _s_ with a single-character _delimiter_.
     The labels are put into a deque in the order according to the flag _reverse_.
     */
-    const std::deque<std::string> split(const std::string& s, const char delimiter, bool reverse=false)
+    const std::deque<std::string> split(_In_ const std::string& s, _In_ const char delimiter, _In_ bool reverse=false)
     {
         std::deque<std::string> labels;
         std::string label;
