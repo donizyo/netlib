@@ -240,10 +240,13 @@ namespace DNS
         const Network::Socket& s;
         std::vector<std::string> forwarders;
     public:
-        Client(std::string address = "127.0.0.1", Network::PORT port = 0)
+        Client(const std::string& address, const Network::PORT& port)
             : s(_SocketType(address, port))
         {
         }
+
+        Client() = delete;
+        Client(const Client&) = delete;
 
         void AddForwarder(const std::string& ip)
         {
@@ -257,6 +260,11 @@ namespace DNS
     class UdpClient : public Client<Network::UdpSocket>
     {
     public:
+        UdpClient(const std::string& address, const Network::PORT& port)
+            : Client<Network::UdpSocket>(address, port)
+        {
+        }
+
         void Send(const Header& header) const
         {
             const static Network::PORT port = 53;
@@ -345,7 +353,7 @@ namespace DNS
 
         std::string encodedDomain = EncodeDomainName(domain);
 
-        UdpClient client;
+        UdpClient client("127.0.0.1", 0);
 
         client.AddForwarder("8.8.8.8");
 
