@@ -101,6 +101,14 @@ HandleIPAddress(int af, const char * addr, int port, sockaddr_in * name)
         throw 1;
     }
 
+    if (0 > port || port > 65535)
+    {
+        std::cerr << "Invalid parameter 'port': "
+            << port
+            << std::endl;
+        throw 1;
+    }
+
     switch (inet_pton(af, addr, &name->sin_addr))
     {
     case 1:
