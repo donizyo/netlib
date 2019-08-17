@@ -326,7 +326,7 @@ namespace DNS
     private:
         const Network::Socket& s;
     public:
-        Server(std::string address = "0.0.0.0", Network::PORT port = PORT_DNS)
+        Server(_In_ const std::string& address = "0.0.0.0", _In_ const Network::PORT port = PORT_DNS)
             : s(_SocketType(address, port))
         {
         }
