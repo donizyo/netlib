@@ -6,7 +6,7 @@
 #define RECV_BUFSIZE    4096
 
 void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how);
-void HandleError(std::string func_name);
+void HandleError(std::string func_name, std::vector<int> expected = std::vector<int>());
 
 #if OS == OS_WINDOWS
 WSADATA wsaData;
@@ -542,22 +542,53 @@ CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how)
 #endif
 }
 
-#include <sstream>
+#if OS == OS_WINDOWS
+void HandleErrorCode(std::string func_name, int code)
+{
+    std::ostringstream ss;
+    ss << "ERR @ '"
+        << func_name
+        << "' ("
+        << code
+        << ")";
+    switch (code)
+    {
+    case WSAEAFNOSUPPORT:
+        ss << ("The address family specified in the Family parameter is not supported. "
+            "This error is returned if the Family parameter specified "
+            "was not AF_INET or AF_INET6.");
+        throw std::invalid_argument(ss.str());
+    case WSAEFAULT:
+        ss << ("The pszAddrString or pAddrBuf parameters are NULL "
+            "or are not part of the user address space.");
+        throw std::invalid_argument(ss.str());
+    default:
+        throw std::runtime_error("Unknown error!");
+    }
+}
 
 /*
 Print the name of buggy function and error code.
 @see: https://docs.microsoft.com/zh-cn/windows/win32/winsock/windows-sockets-error-codes-2
 */
 void
+HandleError(std::string func_name, std::vector<int> expected)
+{
+    int code = WSAGetLastError();
+    for (const int value : expected)
+    {
+        if (code == value)
+        {
+            HandleErrorCode(func_name, code);
+        }
+    }
+}
+#elif OS == OS_LINUX
+void
 HandleError(std::string func_name)
 {
-#if OS == OS_WINDOWS
-    auto code = WSAGetLastError();
-    std::cerr << "ERR @ " << func_name << " -> "
-        << code;
-#elif OS == OS_LINUX
     std::stringstream ss;
     ss << "ERR @ " << func_name;
     perror(ss.str().c_str());
-#endif
 }
+#endif
