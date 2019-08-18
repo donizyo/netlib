@@ -136,7 +136,7 @@ namespace Network
     {
     private:
         SOCKET sock;
-        int af;
+        int addressFamily;
         int type;
     public:
         Socket() = delete;

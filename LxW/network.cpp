@@ -205,10 +205,10 @@ using namespace Network;
 Network::Socket::
 Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::string& address, _In_ const PORT port)
     : sock(INVALID_SOCKET)
-    , af(static_cast<int>(af))
+    , addressFamily(static_cast<int>(af))
     , type(static_cast<int>(type))
 {
-    sock = NewSocket(af, type, 0, address.c_str(), port);
+    sock = NewSocket(addressFamily, type, 0, address.c_str(), port);
 }
 
 Network::Socket::
@@ -233,7 +233,7 @@ Network::Socket::
 Connect(_In_ const std::string& address, _In_ const PORT port) const
 {
     sockaddr_in name = { 0 };
-    HandleIPAddress(af, address.c_str(), port, name);
+    HandleIPAddress(addressFamily, address.c_str(), port, name);
     if (connect(sock, (SOCKADDR *)&name, sizeof(name)) != 0)
     {
         HandleError("Network::Socket::Connect");
@@ -326,7 +326,7 @@ SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags,
         return;
 
     sockaddr_in name = { 0 };
-    HandleIPAddress(af, ip, port, name);
+    HandleIPAddress(addressFamily, ip, port, name);
     int nbytes = sendto(sock, buffer, length, flags, (sockaddr*)&name, sizeof(name));
     if (nbytes == SOCKET_ERROR)
     {
@@ -365,7 +365,7 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
 {
     sockaddr_in name = { 0 };
     int namelen{ 0 };
-    HandleIPAddress(af, ip, port, name);
+    HandleIPAddress(addressFamily, ip, port, name);
     int nbytes = recvfrom(sock, buffer, length, flags, (sockaddr*)&name, &namelen);
     if (nbytes == SOCKET_ERROR)
     {
