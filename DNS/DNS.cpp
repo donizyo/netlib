@@ -246,6 +246,8 @@ namespace DNS
             std::clog << "DNS> Client created."
                 << std::endl
                 << "Client socket=" << s.GetHandle()
+                << std::endl
+                << "Client af=" << s.GetAddressFamily()
                 << std::endl;
         }
 
