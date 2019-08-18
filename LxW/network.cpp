@@ -94,12 +94,14 @@ EndNetwork()
 void
 HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT port, _Out_ sockaddr_in& name)
 {
+#ifdef _DEBUG
     std::clog << "Net> HandleIPAddress(af=" << af
         << ", addr=" << addr
         << ", port=" << port
         << ", name={}"
         << ")"
         << std::endl;
+#endif
 
     switch (af)
     {
@@ -114,25 +116,35 @@ HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT po
                     << af
                     << std::dec;
             auto msg = ss.str();
+#ifdef _DEBUG
             std::cerr << msg
                 << std::endl;
+#endif
             throw std::invalid_argument(msg);
         }
     }
 
     if (addr == nullptr)
     {
-        std::cerr << "Invalid parameter 'addr': null"
+        auto msg = "Invalid parameter 'addr': null";
+#ifdef _DEBUG
+        std::cerr << msg
             << std::endl;
-        throw 1;
+#endif
+        throw std::invalid_argument(msg);
     }
 
     if (0 > port || port > 65535)
     {
-        std::cerr << "Invalid parameter 'port': "
-            << port
+        std::ostringstream ss;
+        ss << "Invalid parameter 'port': "
+            << port;
+        auto msg = ss.str();
+#ifdef _DEBUG
+        std::cerr << msg
             << std::endl;
-        throw 1;
+#endif
+        throw std::invalid_argument(msg);
     }
 
     switch (inet_pton(af, addr, &(name.sin_addr)))
@@ -141,11 +153,17 @@ HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT po
         // success
         break;
     case 0:
-        std::cerr << "Invalid IP address ("
-            << addr
-            << ")!"
-            << std::endl;
-        throw 1;
+        {
+            std::ostringstream ss;
+            ss << "Invalid parameter 'ip': "
+                << addr;
+            auto msg = ss.str();
+#ifdef _DEBUG
+            std::cerr << msg
+                << std::endl;
+#endif
+            throw std::invalid_argument(msg);
+        }
     case -1:
         HandleError("HandleIPAddress");
         std::cerr << "ERR @ inet_pton"
