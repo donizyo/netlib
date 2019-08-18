@@ -94,6 +94,13 @@ EndNetwork()
 void
 HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT port, _Out_ sockaddr_in& name)
 {
+    std::clog << "Net> HandleIPAddress(af=" << af
+        << ", addr=" << addr
+        << ", port=" << port
+        << ", name={}"
+        << ")"
+        << std::endl;
+
     switch (af)
     {
     case AF_INET:
@@ -146,6 +153,13 @@ HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT po
 void
 HandleIPAddress(_In_ int af, _In_ const std::string& addr, _In_ const Network::PORT port, _Out_ sockaddr_in& name)
 {
+    std::clog << "Net> HandleIPAddress(af=" << af
+        << ", addr=" << addr
+        << ", port=" << port
+        << ", name={}"
+        << ")"
+        << std::endl;
+
     HandleIPAddress(af, addr.c_str(), port, name);
 }
 
@@ -300,6 +314,14 @@ void
 Network::Socket::
 SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const
 {
+    std::clog << "Net> Network::Socket::SendTo(length=" << length
+        << ", buffer=[]"
+        << ", flags=" << flags
+        << ", ip=" << ip
+        << ", port=" << port
+        << ")"
+        << std::endl;
+
     if (buffer == nullptr)
         return;
 
