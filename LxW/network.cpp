@@ -113,6 +113,8 @@ HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT po
             std::ostringstream ss;
             ss << "Invalid parameter 'af': "
                     << std::hex
+                    << std::uppercase
+                    << "0x"
                     << af
                     << std::dec;
             auto msg = ss.str();
