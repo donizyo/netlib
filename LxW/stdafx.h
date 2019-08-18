@@ -15,6 +15,7 @@
 
 // reference additional headers your program requires here
 #include <atomic>
+#include <exception>
 
 
 #ifndef _Override

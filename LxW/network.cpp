@@ -107,12 +107,17 @@ HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT po
     case AF_INET6:
         break;
     default:
-        std::cerr << "Invalid parameter 'af': "
-            << std::hex
-            << af
-            << std::dec
-            << std::endl;
-        throw 1;
+        {
+            std::ostringstream ss;
+            ss << "Invalid parameter 'af': "
+                    << std::hex
+                    << af
+                    << std::dec;
+            auto msg = ss.str();
+            std::cerr << msg
+                << std::endl;
+            throw std::invalid_argument(msg);
+        }
     }
 
     if (addr == nullptr)
