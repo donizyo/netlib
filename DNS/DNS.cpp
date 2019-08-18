@@ -391,7 +391,7 @@ int main()
 
         while (hostname.empty())
             cv.wait(lk);
-        std::cout << "Handling '"
+        std::cout << "DNS> Handling '"
             << hostname
             << "' ..."
             << std::endl;
