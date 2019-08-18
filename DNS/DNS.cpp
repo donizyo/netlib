@@ -269,6 +269,12 @@ namespace DNS
         UdpClient(const std::string& address, const Network::PORT port)
             : Client<Network::UdpSocket>(address, port)
         {
+            std::clog << "DNS> UDP Client created."
+                << std::endl
+                << "Client socket=" << s.GetHandle()
+                << std::endl
+                << "Client af=" << s.GetAddressFamily()
+                << std::endl;
         }
 
         void Send(const Header& header) const
