@@ -250,6 +250,13 @@ GetHandle() const
     return sock;
 }
 
+const int
+Network::Socket::
+GetAddressFamily() const
+{
+    return addressFamily;
+}
+
 void
 Network::Socket::
 Connect(_In_ const std::string& address, _In_ const PORT port) const

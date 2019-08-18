@@ -145,6 +145,7 @@ namespace Network
         ~Socket();
 
         const SOCKET& GetHandle() const;
+        const int GetAddressFamily() const;
 
         void Connect(_In_ const std::string& address, _In_ const PORT port) const;
         void Disconnect() const;
