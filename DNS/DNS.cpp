@@ -243,6 +243,10 @@ namespace DNS
         Client(_In_ const std::string& address, _In_ const Network::PORT port)
             : s{ _SocketType(address, port) }
         {
+            std::clog << "DNS> Client created."
+                << std::endl
+                << "Client socket=" << s.GetHandle()
+                << std::endl;
         }
 
         Client() = delete;
