@@ -241,7 +241,7 @@ namespace DNS
         std::vector<std::string> forwarders;
     public:
         Client(_In_ const std::string& address, _In_ const Network::PORT port)
-            : s(_SocketType(address, port))
+            : s{ _SocketType(address, port) }
         {
         }
 
