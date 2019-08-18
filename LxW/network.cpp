@@ -191,6 +191,17 @@ HandleIPAddress(_In_ int af, _In_ const std::string& addr, _In_ const Network::P
 SOCKET
 NewSocket(_In_ int af, _In_ int type, _In_ int protocol, _In_ const char * addr, _In_ int port)
 {
+#ifdef _DEBUG
+    std::cout << "Net> NewSocket("
+        << "af=" << af << ", "
+        << "type=" << type << ", "
+        << "protocol=" << protocol << ", "
+        << "addr=" << addr << ", "
+        << "port=" << port
+        << ") invoked."
+        << std::endl;
+#endif
+
     // Windows:
     // If no error occurs, socket returns a descriptor referencing the new socket.
     // Otherwise, a value of INVALID_SOCKET is returned,
@@ -202,6 +213,7 @@ NewSocket(_In_ int af, _In_ int type, _In_ int protocol, _In_ const char * addr,
     if (s == INVALID_SOCKET)
     {
         fprintf(stderr, "ERR @ socket" NEWLINE);
+        HandleError("NewSocket");
         return INVALID_SOCKET;
     }
 
