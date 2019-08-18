@@ -286,7 +286,6 @@ UdpSocket(std::string address, std::int16_t port)
 }
 
 using SocketStream = Network::Socket::SocketStream;
-#include <mutex>
 class StreamBuffer : std::basic_streambuf<char>
 {
 private:
@@ -315,8 +314,6 @@ public:
     {
     }
 };
-
-#include <mutex>
 
 class SocketOutputBuffer : public StreamBuffer
 {
@@ -360,8 +357,6 @@ CloseSocket(SOCKET s)
     close(s);
 #endif
 }
-
-#include <sstream>
 
 void
 HandleError(std::string func_name)
