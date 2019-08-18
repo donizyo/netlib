@@ -204,11 +204,10 @@ using namespace Network;
 
 Network::Socket::
 Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::string& address, _In_ const PORT port)
-    : sock{ INVALID_SOCKET }
-    , addressFamily{ static_cast<int>(af) }
-    , type{ static_cast<int>(type) }
 {
-    sock = NewSocket(addressFamily, type, 0, address.c_str(), port);
+    addressFamily = static_cast<int>(af);
+    socketType = static_cast<int>(type);
+    sock = NewSocket(addressFamily, socketType, 0, address.c_str(), port);
 }
 
 Network::Socket::

@@ -135,9 +135,9 @@ namespace Network
     class DllExport Socket
     {
     private:
-        SOCKET sock;
-        int addressFamily;
-        int type;
+        SOCKET sock{ INVALID_SOCKET };
+        int addressFamily{ 0 };
+        int socketType{ 0 };
     public:
         Socket() = delete;
         Socket(const Socket &) = delete;
