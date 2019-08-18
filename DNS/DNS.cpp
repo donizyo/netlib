@@ -256,6 +256,9 @@ namespace DNS
 
         void AddForwarder(_In_ const std::string& ip)
         {
+            std::clog << "DNS> Add forward: "
+                << ip
+                << std::endl;
             forwarders.push_back(ip);
         }
 
