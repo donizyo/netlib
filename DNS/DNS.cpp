@@ -237,18 +237,27 @@ namespace DNS
     class Client
     {
     protected:
-        const Network::Socket& s;
+        Network::Socket* sp{ nullptr };
         std::vector<std::string> forwarders;
     public:
         Client(_In_ const std::string& address, _In_ const Network::PORT port)
-            : s{ _SocketType(address, port) }
+            : sp{ new _SocketType(address, port) }
         {
             std::clog << "DNS> Client created."
                 << std::endl
-                << "Client socket=" << s.GetHandle()
+                << "Client socket=" << sp->GetHandle()
                 << std::endl
-                << "Client af=" << s.GetAddressFamily()
+                << "Client af=" << sp->GetAddressFamily()
                 << std::endl;
+        }
+
+        ~Client()
+        {
+            if (sp)
+            {
+                delete sp;
+                sp = nullptr;
+            }
         }
 
         Client() = delete;
@@ -274,9 +283,9 @@ namespace DNS
         {
             std::clog << "DNS> UDP Client created."
                 << std::endl
-                << "Client socket=" << s.GetHandle()
+                << "Client socket=" << sp->GetHandle()
                 << std::endl
-                << "Client af=" << s.GetAddressFamily()
+                << "Client af=" << sp->GetAddressFamily()
                 << std::endl;
         }
 
@@ -288,7 +297,7 @@ namespace DNS
                 std::cout << "DNS> Try to reach IP - "
                     << ip
                     << std::endl;
-                s.SendTo(sizeof(header), (const char*)&header, 0, ip, port);
+                sp->SendTo(sizeof(header), (const char*)&header, 0, ip, port);
             }
         }
 
@@ -300,7 +309,7 @@ namespace DNS
                 std::cout << "DNS> Try to reach IP - "
                     << ip
                     << std::endl;
-                s.SendTo(str.length(), str.c_str(), 0, ip, port);
+                sp->SendTo(str.length(), str.c_str(), 0, ip, port);
             }
         }
     };
@@ -316,8 +325,8 @@ namespace DNS
                 std::cout << "DNS> Try to reach IP - "
                     << ip
                     << std::endl;
-                s.Connect(ip, port);
-                s.Send(sizeof(header), (const char*)&header, 0);
+                sp->Connect(ip, port);
+                sp->Send(sizeof(header), (const char*)&header, 0);
             }
         }
 
@@ -329,8 +338,8 @@ namespace DNS
                 std::cout << "DNS> Try to reach IP - "
                     << ip
                     << std::endl;
-                s.Connect(ip, port);
-                s.Send(str.length(), str.c_str(), 0);
+                sp->Connect(ip, port);
+                sp->Send(str.length(), str.c_str(), 0);
             }
         }
     };
@@ -339,11 +348,20 @@ namespace DNS
     class Server
     {
     private:
-        const Network::Socket& s;
+        Network::Socket* sp{ nullptr };
     public:
         Server(_In_ const std::string& address = "0.0.0.0", _In_ const Network::PORT port = PORT_DNS)
-            : s(_SocketType(address, port))
+            : sp{ new _SocketType(address, port) }
         {
+        }
+
+        ~Server()
+        {
+            if (sp)
+            {
+                delete sp;
+                sp = nullptr;
+            }
         }
     };
 
@@ -356,7 +374,14 @@ namespace DNS
     void ResolveDomainName(_In_ const std::string& domain, RecordType type)
     {
         if (domain.empty())
-            return;
+        {
+            throw std::invalid_argument("Invalid parameter 'domain': \"(empty string)\"");
+        }
+
+        if (!ValidateDomainName(domain))
+        {
+            throw std::runtime_error("Invalid domain name");
+        }
 
         Header header = { 0 };
         // get process id
