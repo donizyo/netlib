@@ -80,6 +80,23 @@ namespace DNS
     // +---------------------+
     // | Additional          | RRs holding additional information
     // +---------------------+
+    //
+    // 4.1.1 Header section format
+    //                                 1  1  1  1  1  1
+    //   0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+    // +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    // |                       ID                      |
+    // +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    // |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
+    // +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    // |                   QDCOUNT                     |
+    // +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    // |                   ANCOUNT                     |
+    // +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    // |                   NSCOUNT                     |
+    // +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    // |                   ARCOUNT                     |
+    // +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 #pragma pack(push, 1)
     struct Header
     {
@@ -234,24 +251,19 @@ namespace DNS
     }
 
     template<class _SocketType>
-    class Client
+    class Handler
     {
     protected:
         Network::Socket* sp{ nullptr };
-        std::vector<std::string> forwarders;
     public:
-        Client(_In_ const std::string& address, _In_ const Network::PORT port)
+        Handler(_In_ const std::string& address, _In_ const Network::PORT port)
             : sp{ new _SocketType(address, port) }
         {
-            std::clog << "DNS> Client created."
-                << std::endl
-                << "Client socket=" << sp->GetHandle()
-                << std::endl
-                << "Client af=" << sp->GetAddressFamily()
-                << std::endl;
         }
+        Handler() = delete;
+        Handler(_In_ const Handler&) = delete;
 
-        ~Client()
+        ~Handler()
         {
             if (sp)
             {
@@ -260,8 +272,119 @@ namespace DNS
             }
         }
 
-        Client() = delete;
-        Client(_In_ const Client&) = delete;
+        class Message
+        {
+        protected:
+            union
+            {
+                char buffer[TCP_BUFFER_CAPACITY];
+                struct
+                {
+                    Header header;
+                    Question question;
+                };
+            };
+            const Handler* hdlr;
+        public:
+            Message(const Handler* handler, const std::string& ip, const Network::PORT port)
+                : hdlr{ handler }
+            {
+                hdlr->sp->ReceiveFrom(sizeof(buffer), buffer, 0, ip, port);
+
+                NTOHS(header.qdcount);
+                NTOHS(header.ancount);
+                NTOHS(header.nscount);
+                NTOHS(header.arcount);
+            }
+
+            bool IsQuery() const { return header.qr == 0; }
+            bool IsResponse() const { return header.qr == 1; }
+
+            const uint8_t GetOpcode() const { return header.opcode; }
+            const std::string GetOpcodeString() const
+            {
+                const static std::string text[] = {
+                    "Standard Query",
+                    "Inverse Query",
+                    "Server Status Request",
+                };
+
+                const uint8_t opcode = GetOpcode();
+                if (0 <= opcode && opcode < (sizeof(text) / sizeof(std::string)))
+                    return text[opcode];
+                return "Reserved";
+            }
+
+            const uint8_t GetResponseCode() const { return header.rcode; }
+            const std::string GetResponseString() const
+            {
+                const static std::string text[] = {
+                    "No error",
+                    "Format error",
+                    "Server failure",
+                    "Name error",
+                    "Not implemented",
+                    "Refused",
+                };
+
+                const uint8_t rcode = GetResponseCode();
+                if (0 <= rcode && rcode < (sizeof(text) / sizeof(std::string)))
+                    return text[rcode];
+                return "Unknown";
+            }
+
+            //virtual std::vector<ResourceRecord> GetAuthoritativeAnswers() const = 0;
+            //virtual std::vector<ResourceRecord> GetAdditionalInformation() const = 0;
+        };
+
+        ResourceRecord* Receive(const std::string& ip)
+        {
+            const static Network::PORT port = 53;
+            Message message(this, ip, port);
+
+            if (message.GetResponseCode() != 0)
+            {
+                std::ostringstream ss;
+                ss << "Invalid DNS response (rcode: "
+                    << message.GetResponseCode()
+                    << " "
+                    << message.GetResponseString()
+                    << ")";
+                std::cerr << ss.str();
+                throw std::runtime_error(ss.str());
+            }
+
+            const Header& header = message.header;
+
+            std::cout << "The response message contains:" << std::endl
+                << header.qdcount << " questions;" << std::endl
+                << header.ancount << " answers;" << std::endl
+                << header.nscount << " authoritative servers;" << std::endl
+                << header.arcount << " additional records." << std::endl
+                << std::endl;
+
+            const Question& question = message.question;
+
+
+            ResourceRecord* record;
+            const size_t rrSize = sizeof(ResourceRecord);
+            record = (ResourceRecord*)malloc(rrSize);
+            memset(record, 0, rrSize);
+
+            return nullptr;
+        }
+    };
+
+    template<class _SocketType>
+    class Client : public Handler<_SocketType>
+    {
+    protected:
+        std::vector<std::string> forwarders;
+    public:
+        Client(const std::string& address, const Network::PORT port)
+            : Handler<_SocketType>(address, port)
+        {
+        }
 
         void AddForwarder(_In_ const std::string& ip)
         {
@@ -279,14 +402,8 @@ namespace DNS
     {
     public:
         UdpClient(const std::string& address, const Network::PORT port)
-            : Client<Network::UdpSocket>(address, port)
+            : Client(address, port)
         {
-            std::clog << "DNS> UDP Client created."
-                << std::endl
-                << "Client socket=" << sp->GetHandle()
-                << std::endl
-                << "Client af=" << sp->GetAddressFamily()
-                << std::endl;
         }
 
         void Send(const Header& header) const
@@ -345,24 +462,9 @@ namespace DNS
     };
 
     template<class _SocketType>
-    class Server
+    class Server : public Handler<_SocketType>
     {
-    private:
-        Network::Socket* sp{ nullptr };
     public:
-        Server(_In_ const std::string& address = "0.0.0.0", _In_ const Network::PORT port = PORT_DNS)
-            : sp{ new _SocketType(address, port) }
-        {
-        }
-
-        ~Server()
-        {
-            if (sp)
-            {
-                delete sp;
-                sp = nullptr;
-            }
-        }
     };
 
     class UdpServer : public Server<Network::UdpSocket>
@@ -399,6 +501,8 @@ namespace DNS
 
         client.Send(header);
         client.Send(encodedDomain);
+
+        client.Receive("8.8.8.8");
     }
 };
 
