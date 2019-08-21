@@ -178,13 +178,6 @@ HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT po
 void
 HandleIPAddress(_In_ int af, _In_ const std::string& addr, _In_ const Network::PORT port, _Out_ sockaddr_in& name)
 {
-    std::clog << "Net> HandleIPAddress(af=" << af
-        << ", addr=" << addr
-        << ", port=" << port
-        << ", name={}"
-        << ")"
-        << std::endl;
-
     HandleIPAddress(af, addr.c_str(), port, name);
 }
 
