@@ -559,6 +559,106 @@ CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how)
 }
 
 #if OS == OS_WINDOWS
+const char* TranslateErrorCode(_In_ const int code)
+{
+    const char* name = nullptr;
+    switch (code)
+    {
+    case WSAEINTR: name = "WSAEINTR"; break;
+    case WSAEBADF: name = "WSAEBADF"; break;
+    case WSAEACCES: name = "WSAEACCES"; break;
+    case WSAEFAULT: name = "WSAEFAULT"; break;
+    case WSAEINVAL: name = "WSAEINVAL"; break;
+    case WSAEMFILE: name = "WSAEMFILE"; break;
+    case WSAEWOULDBLOCK: name = "WSAEWOULDBLOCK"; break;
+    case WSAEINPROGRESS: name = "WSAEINPROGRESS"; break;
+    case WSAEALREADY: name = "WSAEALREADY"; break;
+    case WSAENOTSOCK: name = "WSAENOTSOCK"; break;
+    case WSAEDESTADDRREQ: name = "WSAEDESTADDRREQ"; break;
+    case WSAEMSGSIZE: name = "WSAEMSGSIZE"; break;
+    case WSAEPROTOTYPE: name = "WSAEPROTOTYPE"; break;
+    case WSAENOPROTOOPT: name = "WSAENOPROTOOPT"; break;
+    case WSAEPROTONOSUPPORT: name = "WSAEPROTONOSUPPORT"; break;
+    case WSAESOCKTNOSUPPORT: name = "WSAESOCKTNOSUPPORT"; break;
+    case WSAEOPNOTSUPP: name = "WSAEOPNOTSUPP"; break;
+    case WSAEPFNOSUPPORT: name = "WSAEPFNOSUPPORT"; break;
+    case WSAEAFNOSUPPORT: name = "WSAEAFNOSUPPORT"; break;
+    case WSAEADDRINUSE: name = "WSAEADDRINUSE"; break;
+    case WSAEADDRNOTAVAIL: name = "WSAEADDRNOTAVAIL"; break;
+    case WSAENETDOWN: name = "WSAENETDOWN"; break;
+    case WSAENETUNREACH: name = "WSAENETUNREACH"; break;
+    case WSAENETRESET: name = "WSAENETRESET"; break;
+    case WSAECONNABORTED: name = "WSAECONNABORTED"; break;
+    case WSAECONNRESET: name = "WSAECONNRESET"; break;
+    case WSAENOBUFS: name = "WSAENOBUFS"; break;
+    case WSAEISCONN: name = "WSAEISCONN"; break;
+    case WSAENOTCONN: name = "WSAENOTCONN"; break;
+    case WSAESHUTDOWN: name = "WSAESHUTDOWN"; break;
+    case WSAETOOMANYREFS: name = "WSAETOOMANYREFS"; break;
+    case WSAETIMEDOUT: name = "WSAETIMEDOUT"; break;
+    case WSAECONNREFUSED: name = "WSAECONNREFUSED"; break;
+    case WSAELOOP: name = "WSAELOOP"; break;
+    case WSAENAMETOOLONG: name = "WSAENAMETOOLONG"; break;
+    case WSAEHOSTDOWN: name = "WSAEHOSTDOWN"; break;
+    case WSAEHOSTUNREACH: name = "WSAEHOSTUNREACH"; break;
+    case WSAENOTEMPTY: name = "WSAENOTEMPTY"; break;
+    case WSAEPROCLIM: name = "WSAEPROCLIM"; break;
+    case WSAEUSERS: name = "WSAEUSERS"; break;
+    case WSAEDQUOT: name = "WSAEDQUOT"; break;
+    case WSAESTALE: name = "WSAESTALE"; break;
+    case WSAEREMOTE: name = "WSAEREMOTE"; break;
+    case WSASYSNOTREADY: name = "WSASYSNOTREADY"; break;
+    case WSAVERNOTSUPPORTED: name = "WSAVERNOTSUPPORTED"; break;
+    case WSANOTINITIALISED: name = "WSANOTINITIALISED"; break;
+    case WSAEDISCON: name = "WSAEDISCON"; break;
+    case WSAENOMORE: name = "WSAENOMORE"; break;
+    case WSAECANCELLED: name = "WSAECANCELLED"; break;
+    case WSAEINVALIDPROCTABLE: name = "WSAEINVALIDPROCTABLE"; break;
+    case WSAEINVALIDPROVIDER: name = "WSAEINVALIDPROVIDER"; break;
+    case WSAEPROVIDERFAILEDINIT: name = "WSAEPROVIDERFAILEDINIT"; break;
+    case WSASYSCALLFAILURE: name = "WSASYSCALLFAILURE"; break;
+    case WSASERVICE_NOT_FOUND: name = "WSASERVICE_NOT_FOUND"; break;
+    case WSATYPE_NOT_FOUND: name = "WSATYPE_NOT_FOUND"; break;
+    case WSA_E_NO_MORE: name = "WSA_E_NO_MORE"; break;
+    case WSA_E_CANCELLED: name = "WSA_E_CANCELLED"; break;
+    case WSAEREFUSED: name = "WSAEREFUSED"; break;
+    case WSAHOST_NOT_FOUND: name = "WSAHOST_NOT_FOUND"; break;
+    case WSATRY_AGAIN: name = "WSATRY_AGAIN"; break;
+    case WSANO_RECOVERY: name = "WSANO_RECOVERY"; break;
+    case WSANO_DATA: name = "WSANO_DATA"; break;
+    case WSA_QOS_RECEIVERS: name = "WSA_QOS_RECEIVERS"; break;
+    case WSA_QOS_SENDERS: name = "WSA_QOS_SENDERS"; break;
+    case WSA_QOS_NO_SENDERS: name = "WSA_QOS_NO_SENDERS"; break;
+    case WSA_QOS_NO_RECEIVERS: name = "WSA_QOS_NO_RECEIVERS"; break;
+    case WSA_QOS_REQUEST_CONFIRMED: name = "WSA_QOS_REQUEST_CONFIRMED"; break;
+    case WSA_QOS_ADMISSION_FAILURE: name = "WSA_QOS_ADMISSION_FAILURE"; break;
+    case WSA_QOS_POLICY_FAILURE: name = "WSA_QOS_POLICY_FAILURE"; break;
+    case WSA_QOS_BAD_STYLE: name = "WSA_QOS_BAD_STYLE"; break;
+    case WSA_QOS_BAD_OBJECT: name = "WSA_QOS_BAD_OBJECT"; break;
+    case WSA_QOS_TRAFFIC_CTRL_ERROR: name = "WSA_QOS_TRAFFIC_CTRL_ERROR"; break;
+    case WSA_QOS_GENERIC_ERROR: name = "WSA_QOS_GENERIC_ERROR"; break;
+    case WSA_QOS_ESERVICETYPE: name = "WSA_QOS_ESERVICETYPE"; break;
+    case WSA_QOS_EFLOWSPEC: name = "WSA_QOS_EFLOWSPEC"; break;
+    case WSA_QOS_EPROVSPECBUF: name = "WSA_QOS_EPROVSPECBUF"; break;
+    case WSA_QOS_EFILTERSTYLE: name = "WSA_QOS_EFILTERSTYLE"; break;
+    case WSA_QOS_EFILTERTYPE: name = "WSA_QOS_EFILTERTYPE"; break;
+    case WSA_QOS_EFILTERCOUNT: name = "WSA_QOS_EFILTERCOUNT"; break;
+    case WSA_QOS_EOBJLENGTH: name = "WSA_QOS_EOBJLENGTH"; break;
+    case WSA_QOS_EFLOWCOUNT: name = "WSA_QOS_EFLOWCOUNT"; break;
+    case WSA_QOS_EUNKOWNPSOBJ: name = "WSA_QOS_EUNKOWNPSOBJ"; break;
+    case WSA_QOS_EPOLICYOBJ: name = "WSA_QOS_EPOLICYOBJ"; break;
+    case WSA_QOS_EFLOWDESC: name = "WSA_QOS_EFLOWDESC"; break;
+    case WSA_QOS_EPSFLOWSPEC: name = "WSA_QOS_EPSFLOWSPEC"; break;
+    case WSA_QOS_EPSFILTERSPEC: name = "WSA_QOS_EPSFILTERSPEC"; break;
+    case WSA_QOS_ESDMODEOBJ: name = "WSA_QOS_ESDMODEOBJ"; break;
+    case WSA_QOS_ESHAPERATEOBJ: name = "WSA_QOS_ESHAPERATEOBJ"; break;
+    case WSA_QOS_RESERVED_PETYPE: name = "WSA_QOS_RESERVED_PETYPE"; break;
+    case WSA_SECURE_HOST_NOT_FOUND: name = "WSA_SECURE_HOST_NOT_FOUND"; break;
+    case WSA_IPSEC_NAME_POLICY_ERROR: name = "WSA_IPSEC_NAME_POLICY_ERROR"; break;
+    }
+    return name;
+}
+
 void HandleErrorCode(_In_ const std::string& func_name, _In_ const int code)
 {
     std::ostringstream ss;
@@ -566,7 +666,10 @@ void HandleErrorCode(_In_ const std::string& func_name, _In_ const int code)
         << func_name
         << "' ("
         << code
-        << ")";
+        << " "
+        << TranslateErrorCode(code)
+        << ") ";
+
     switch (code)
     {
     case WSAEAFNOSUPPORT:
