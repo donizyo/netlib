@@ -663,6 +663,7 @@ const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In
     const char* result = nullptr;
     if (winapi_func_name == "inet_pton")
     {
+        // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-socket
         switch (code)
         {
         case WSAEAFNOSUPPORT:
@@ -696,6 +697,79 @@ const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In
     }
     else if (winapi_func_name == "sendto")
     {
+        // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto
+        switch (code)
+        {
+        case WSANOTINITIALISED:
+            result = "A successful WSAStartup call must occur before using this function.";
+            break;
+        case WSAENETDOWN:
+            result = "The network subsystem has failed.";
+            break;
+        case WSAEACCES:
+            result = "The requested address is a broadcast address, but the appropriate flag was not set. Call setsockopt with the SO_BROADCAST parameter to allow the use of the broadcast address.";
+            break;
+        case WSAEINVAL:
+            result = "An unknown flag was specified, or MSG_OOB was specified for a socket with SO_OOBINLINE enabled.";
+            break;
+        case WSAEINTR:
+            result = "A blocking Windows Sockets 1.1 call was canceled through WSACancelBlockingCall.";
+            break;
+        case WSAEINPROGRESS:
+            result = "A blocking Windows Sockets 1.1 call is in progress, or the service provider is still processing a callback function.";
+            break;
+        case WSAEFAULT:
+            result = "The buf or to parameters are not part of the user address space, or the tolen parameter is too small.";
+            break;
+        case WSAENETRESET:
+            result = "The connection has been broken due to keep-alive activity detecting a failure while the operation was in progress.";
+            break;
+        case WSAENOBUFS:
+            result = "No buffer space is available.";
+            break;
+        case WSAENOTCONN:
+            result = "The socket is not connected (connection-oriented sockets only).";
+            break;
+        case WSAENOTSOCK:
+            result = "The descriptor is not a socket.";
+            break;
+        case WSAEOPNOTSUPP:
+            result = "MSG_OOB was specified, but the socket is not stream-style such as type SOCK_STREAM, OOB data is not supported in the communication domain associated with this socket, or the socket is unidirectional and supports only receive operations.";
+            break;
+        case WSAESHUTDOWN:
+            result = "The socket has been shut down; it is not possible to sendto on a socket after shutdown has been invoked with how set to SD_SEND or SD_BOTH.";
+            break;
+        case WSAEWOULDBLOCK:
+            result = "The socket is marked as nonblocking and the requested operation would block.";
+            break;
+        case WSAEMSGSIZE:
+            result = "The socket is message oriented, and the message is larger than the maximum supported by the underlying transport.";
+            break;
+        case WSAEHOSTUNREACH:
+            result = "The remote host cannot be reached from this host at this time.";
+            break;
+        case WSAECONNABORTED:
+            result = "The virtual circuit was terminated due to a time-out or other failure. The application should close the socket as it is no longer usable.";
+            break;
+        case WSAECONNRESET:
+            result = "The virtual circuit was reset by the remote side executing a hard or abortive close. For UPD sockets, the remote host was unable to deliver a previously sent UDP datagram and responded with a \"Port Unreachable\" ICMP packet. The application should close the socket as it is no longer usable.";
+            break;
+        case WSAEADDRNOTAVAIL:
+            result = "The remote address is not a valid address, for example, ADDR_ANY.";
+            break;
+        case WSAEAFNOSUPPORT:
+            result = "Addresses in the specified family cannot be used with this socket.";
+            break;
+        case WSAEDESTADDRREQ:
+            result = "A destination address is required.";
+            break;
+        case WSAENETUNREACH:
+            result = "The network cannot be reached from this host at this time.";
+            break;
+        case WSAETIMEDOUT:
+            result = "The connection has been dropped, because of a network failure or because the system on the other end went down without notice. ";
+            break;
+        }
     }
     else if (winapi_func_name == "recv")
     {
