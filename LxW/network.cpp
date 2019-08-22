@@ -660,8 +660,21 @@ const char* TranslateErrorCode(_In_ const int code)
 }
 const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In_ const int code)
 {
+    const char* result = nullptr;
     if (winapi_func_name == "inet_pton")
     {
+        switch (code)
+        {
+        case WSAEAFNOSUPPORT:
+            result = ("The address family specified in the Family parameter is not supported. "
+                "This error is returned if the Family parameter specified "
+                "was not AF_INET or AF_INET6.");
+            break;
+        case WSAEFAULT:
+            result = ("The pszAddrString or pAddrBuf parameters are NULL "
+                "or are not part of the user address space.");
+            break;
+        }
     }
     else if (winapi_func_name == "socket")
     {
@@ -691,7 +704,9 @@ const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In
     {
     }
 
-    return "";
+    if (result == nullptr)
+        result = "";
+    return result;
 }
 
 void HandleErrorCode(_In_ const std::string& func_name, _In_ const int code, _In_ const std::string& winapi_func_name)
@@ -705,29 +720,9 @@ void HandleErrorCode(_In_ const std::string& func_name, _In_ const int code, _In
         << TranslateErrorCode(code)
         << ") "
         << GetDetailedErrorString(winapi_func_name, code);
-
-    switch (code)
-    {
-    case WSAEAFNOSUPPORT:
-        ss << ("The address family specified in the Family parameter is not supported. "
-            "This error is returned if the Family parameter specified "
-            "was not AF_INET or AF_INET6.");
-        break;
-    case WSAEFAULT:
-        ss << ("The pszAddrString or pAddrBuf parameters are NULL "
-            "or are not part of the user address space.");
-        break;
-    }
-
+#ifdef _DEBUG
     std::cerr << ss.str();
-    if (code == WSAEAFNOSUPPORT || code == WSAEFAULT)
-    {
-        throw std::invalid_argument(ss.str());
-    }
-    else
-    {
-        throw std::runtime_error("Unknown error!");
-    }
+#endif
 }
 
 /*
