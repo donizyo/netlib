@@ -7,7 +7,7 @@
 #define WSAEL_recvfrom  {WSANOTINITIALISED,WSAENETDOWN,WSAEFAULT,WSAEINTR,WSAEINPROGRESS,WSAEINVAL,WSAEISCONN,WSAENETRESET,WSAENOTSOCK,WSAEOPNOTSUPP,WSAESHUTDOWN,WSAEWOULDBLOCK,WSAEMSGSIZE,WSAETIMEDOUT,WSAECONNRESET}
 
 void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how);
-void HandleError(_In_ const std::string& func_name, _In_opt_ std::vector<int> expected = std::vector<int>());
+void HandleError(_In_ const std::string&& func_name, _In_ const std::string&& winapi_func_name);
 
 #if OS == OS_WINDOWS
 WSADATA wsaData;
@@ -168,7 +168,7 @@ HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT po
             throw std::invalid_argument(msg);
         }
     case -1:
-        HandleError("HandleIPAddress");
+        HandleError("HandleIPAddress", "inet_pton");
         std::cerr << "ERR @ inet_pton"
             << std::endl;
         throw 1;
@@ -207,7 +207,7 @@ NewSocket(_In_ int af, _In_ int type, _In_ int protocol, _In_ const char * addr,
     if (s == INVALID_SOCKET)
     {
         fprintf(stderr, "ERR @ socket" NEWLINE);
-        HandleError("NewSocket");
+        HandleError("NewSocket", "socket");
         return INVALID_SOCKET;
     }
 
@@ -273,7 +273,7 @@ Connect(_In_ const std::string& address, _In_ const PORT port) const
     HandleIPAddress(GetAddressFamily(), address.c_str(), port, name);
     if (connect(sock, (SOCKADDR *)&name, sizeof(name)) != 0)
     {
-        HandleError("Network::Socket::Connect");
+        HandleError("Network::Socket::Connect", "connect");
         throw 1;
     }
 }
@@ -284,7 +284,7 @@ Disconnect() const
 {
     if (shutdown(sock, static_cast<int>(Network::Shutdown::Both)) == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::Disconnect");
+        HandleError("Network::Socket::Disconnect", "shutdown");
         throw 1;
     }
 }
@@ -306,7 +306,7 @@ Listen() const
     int backlog = 128;
     if (listen(sock, backlog) == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::Listen");
+        HandleError("Network::Socket::Listen", "listen");
         throw 1;
     }
 }
@@ -320,7 +320,7 @@ Accept() const
     SOCKET s = accept(sock, (sockaddr*)(&addr), &addrlen);
     if (s == INVALID_SOCKET)
     {
-        HandleError("Network::Socket::Accept");
+        HandleError("Network::Socket::Accept", "accept");
         throw 1;
     }
 }
@@ -342,7 +342,7 @@ Send(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags) c
     int nbytes = send(sock, buffer, length, flags);
     if (nbytes == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::Send");
+        HandleError("Network::Socket::Send", "send");
         throw 1;
     }
 }
@@ -367,7 +367,7 @@ SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags,
     int nbytes = sendto(sock, buffer, length, flags, (sockaddr*)&name, sizeof(name));
     if (nbytes == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::SendTo");
+        HandleError("Network::Socket::SendTo", "sendto");
         throw 1;
     }
 }
@@ -391,7 +391,7 @@ Receive(_In_ const int bufsize, _Out_writes_bytes_all_(bufsize) char* buf, _In_ 
 
     if (recv(sock, buf, bufsize, flags) == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::Receive");
+        HandleError("Network::Socket::Receive", "recv");
         throw 1;
     }
 }
@@ -407,7 +407,7 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
     if (nbytes == SOCKET_ERROR)
     {
         const std::vector<int> expected WSAEL_recvfrom;
-        HandleError("Network::Socket::ReceiveFrom", expected);
+        HandleError("Network::Socket::ReceiveFrom", "recvfrom");
         throw 1;
     }
 }
@@ -431,7 +431,7 @@ Select(_In_ const int nfds, _Inout_updates_bytes_all_opt_(nfds) fd_set* rfds, _I
     int retval = select(nfds, rfds, wfds, efds, timeout);
     if (retval == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::Select");
+        HandleError("Network::Socket::Select", "select");
         throw 1;
     }
 }
@@ -658,8 +658,43 @@ const char* TranslateErrorCode(_In_ const int code)
     }
     return name;
 }
+const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In_ const int code)
+{
+    if (winapi_func_name == "inet_pton")
+    {
+    }
+    else if (winapi_func_name == "socket")
+    {
+    }
+    else if (winapi_func_name == "connect")
+    {
+    }
+    else if (winapi_func_name == "shutdown")
+    {
+    }
+    else if (winapi_func_name == "listen")
+    {
+    }
+    else if (winapi_func_name == "accept")
+    {
+    }
+    else if (winapi_func_name == "send")
+    {
+    }
+    else if (winapi_func_name == "sendto")
+    {
+    }
+    else if (winapi_func_name == "recv")
+    {
+    }
+    else if (winapi_func_name == "recvfrom")
+    {
+    }
 
-void HandleErrorCode(_In_ const std::string& func_name, _In_ const int code)
+    return "";
+}
+
+void HandleErrorCode(_In_ const std::string& func_name, _In_ const int code, _In_ const std::string& winapi_func_name)
 {
     std::ostringstream ss;
     ss << "ERR @ '"
@@ -668,7 +703,8 @@ void HandleErrorCode(_In_ const std::string& func_name, _In_ const int code)
         << code
         << " "
         << TranslateErrorCode(code)
-        << ") ";
+        << ") "
+        << GetDetailedErrorString(winapi_func_name, code);
 
     switch (code)
     {
@@ -699,25 +735,10 @@ Print the name of buggy function and error code.
 @see: https://docs.microsoft.com/zh-cn/windows/win32/winsock/windows-sockets-error-codes-2
 */
 void
-HandleError(_In_ const std::string& func_name, _In_opt_ std::vector<int> expected)
+HandleError(_In_ const std::string&& func_name, _In_ const std::string&& winapi_func_name)
 {
     int code = WSAGetLastError();
-    if (expected.empty())
-    {
-        std::cerr << "ERR @ '"
-            << func_name
-            << "' ("
-            << code
-            << ")";
-        return;
-    }
-    for (const int value : expected)
-    {
-        if (code == value)
-        {
-            HandleErrorCode(func_name, code);
-        }
-    }
+    HandleErrorCode(func_name, code, winapi_func_name);
 }
 #elif OS == OS_LINUX
 void
