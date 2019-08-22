@@ -250,7 +250,7 @@ namespace DNS
         return res;
     }
 
-    template<class _SocketType>
+    template<class _SocketType Extends(Network::Socket)>
     class Handler
     {
     protected:
@@ -375,7 +375,7 @@ namespace DNS
         }
     };
 
-    template<class _SocketType>
+    template<class _SocketType Extends(Network::Socket)>
     class Client : public Handler<_SocketType>
     {
     protected:
@@ -461,7 +461,7 @@ namespace DNS
         }
     };
 
-    template<class _SocketType>
+    template<class _SocketType Extends(Network::Socket)>
     class Server : public Handler<_SocketType>
     {
     public:
