@@ -776,6 +776,54 @@ const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In
     }
     else if (winapi_func_name == "recvfrom")
     {
+        // https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recvfrom
+        switch (code)
+        {
+        case WSANOTINITIALISED:
+            result = "A successful WSAStartup call must occur before using this function.";
+            break;
+        case WSAENETDOWN:
+            result = "The network subsystem has failed.";
+            break;
+        case WSAEFAULT:
+            result = "The buffer pointed to by the buf or from parameters are not in the user address space, or the fromlen parameter is too small to accommodate the source address of the peer address.";
+            break;
+        case WSAEINTR:
+            result = "The (blocking) call was canceled through WSACancelBlockingCall.";
+            break;
+        case WSAEINPROGRESS:
+            result = "A blocking Windows Sockets 1.1 call is in progress, or the service provider is still processing a callback function.";
+            break;
+        case WSAEINVAL:
+            result = "The socket has not been bound with bind, or an unknown flag was specified, or MSG_OOB was specified for a socket with SO_OOBINLINE enabled, or (for byte stream-style sockets only) len was zero or negative.";
+            break;
+        case WSAEISCONN:
+            result = "The socket is connected. This function is not permitted with a connected socket, whether the socket is connection oriented or connectionless.";
+            break;
+        case WSAENETRESET:
+            result = "For a datagram socket, this error indicates that the time to live has expired.";
+            break;
+        case WSAENOTSOCK:
+            result = "The descriptor in the s parameter is not a socket.";
+            break;
+        case WSAEOPNOTSUPP:
+            result = "MSG_OOB was specified, but the socket is not stream-style such as type SOCK_STREAM, OOB data is not supported in the communication domain associated with this socket, or the socket is unidirectional and supports only send operations.";
+            break;
+        case WSAESHUTDOWN:
+            result = "The socket has been shut down; it is not possible to recvfrom on a socket after shutdown has been invoked with how set to SD_RECEIVE or SD_BOTH.";
+            break;
+        case WSAEWOULDBLOCK:
+            result = "The socket is marked as nonblocking and the recvfrom operation would block.";
+            break;
+        case WSAEMSGSIZE:
+            result = "The message was too large to fit into the buffer pointed to by the buf parameter and was truncated.";
+            break;
+        case WSAETIMEDOUT:
+            result = "The connection has been dropped, because of a network failure or because the system on the other end went down without notice.";
+            break;
+        case WSAECONNRESET:
+            result = "The virtual circuit was reset by the remote side executing a hard or abortive close. The application should close the socket; it is no longer usable. On a UDP-datagram socket this error indicates a previous send operation resulted in an ICMP Port Unreachable message. ";
+        }
     }
 
     if (result == nullptr)
