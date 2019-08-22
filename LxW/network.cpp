@@ -4,7 +4,6 @@
 #include "network.h"
 
 #define RECV_BUFSIZE    4096
-#define WSAEL_recvfrom  {WSANOTINITIALISED,WSAENETDOWN,WSAEFAULT,WSAEINTR,WSAEINPROGRESS,WSAEINVAL,WSAEISCONN,WSAENETRESET,WSAENOTSOCK,WSAEOPNOTSUPP,WSAESHUTDOWN,WSAEWOULDBLOCK,WSAEMSGSIZE,WSAETIMEDOUT,WSAECONNRESET}
 
 void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how);
 void HandleError(_In_ const std::string&& func_name, _In_ const std::string&& winapi_func_name);
@@ -406,7 +405,6 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
     int nbytes = recvfrom(sock, buffer, length, flags, (sockaddr*)&name, &namelen);
     if (nbytes == SOCKET_ERROR)
     {
-        const std::vector<int> expected WSAEL_recvfrom;
         HandleError("Network::Socket::ReceiveFrom", "recvfrom");
         throw 1;
     }
