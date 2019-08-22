@@ -6,7 +6,7 @@
 #define RECV_BUFSIZE    4096
 
 void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how);
-void HandleError(std::string func_name, std::vector<int> expected = std::vector<int>());
+void HandleError(_In_ const std::string& func_name, _In_opt_ std::vector<int> expected = std::vector<int>());
 
 #if OS == OS_WINDOWS
 WSADATA wsaData;
@@ -586,7 +586,7 @@ Print the name of buggy function and error code.
 @see: https://docs.microsoft.com/zh-cn/windows/win32/winsock/windows-sockets-error-codes-2
 */
 void
-HandleError(std::string func_name, std::vector<int> expected)
+HandleError(_In_ const std::string& func_name, _In_opt_ std::vector<int> expected)
 {
     int code = WSAGetLastError();
     for (const int value : expected)
