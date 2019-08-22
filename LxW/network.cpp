@@ -663,7 +663,7 @@ const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In
     const char* result = nullptr;
     if (winapi_func_name == "inet_pton")
     {
-        // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-socket
+        // https://docs.microsoft.com/en-us/windows/win32/api/ws2tcpip/nf-ws2tcpip-inet_pton
         switch (code)
         {
         case WSAEAFNOSUPPORT:
@@ -679,6 +679,49 @@ const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In
     }
     else if (winapi_func_name == "socket")
     {
+        // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-socket
+        switch (code)
+        {
+        case WSANOTINITIALISED:
+            result = "A successful WSAStartup call must occur before using this function.";
+            break;
+        case WSAENETDOWN:
+            result = "The network subsystem or the associated service provider has failed.";
+            break;
+        case WSAEAFNOSUPPORT:
+            result = "The specified address family is not supported. For example, an application tried to create a socket for the AF_IRDA address family but an infrared adapter and device driver is not installed on the local computer.";
+            break;
+        case WSAEINPROGRESS:
+            result = "A blocking Windows Sockets 1.1 call is in progress, or the service provider is still processing a callback function.";
+            break;
+        case WSAEMFILE:
+            result = "No more socket descriptors are available.";
+            break;
+        case WSAEINVAL:
+            result = "An invalid argument was supplied. This error is returned if the af parameter is set to AF_UNSPEC and the type and protocol parameter are unspecified.";
+            break;
+        case WSAEINVALIDPROVIDER:
+            result = "The service provider returned a version other than 2.2.";
+            break;
+        case WSAEINVALIDPROCTABLE:
+            result = "The service provider returned an invalid or incomplete procedure table to the WSPStartup.";
+            break;
+        case WSAENOBUFS:
+            result = "No buffer space is available. The socket cannot be created.";
+            break;
+        case WSAEPROTONOSUPPORT:
+            result = "The specified protocol is not supported.";
+            break;
+        case WSAEPROTOTYPE:
+            result = "The specified protocol is the wrong type for this socket.";
+            break;
+        case WSAEPROVIDERFAILEDINIT:
+            result = "The service provider failed to initialize. This error is returned if a layered service provider (LSP) or namespace provider was improperly installed or the provider fails to operate correctly.";
+            break;
+        case WSAESOCKTNOSUPPORT:
+            result = "The specified socket type is not supported in this address family.";
+            break;
+        }
     }
     else if (winapi_func_name == "connect")
     {
