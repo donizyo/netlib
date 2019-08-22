@@ -70,6 +70,14 @@ typedef struct sockaddr SOCKADDR;
 #   define TCP_BUFFER_CAPACITY 65536
 #endif
 
+/*
+Used in template type list.
+i.e.
+template <typename T Extends(Number)>
+class Vector {};
+*/
+#define Extends(BaseType)
+
 #define NTOHS(d) (d = ntohs(d))
 
 typedef SOCKET * SOCKPTR;

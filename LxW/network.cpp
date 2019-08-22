@@ -504,7 +504,7 @@ public:
     }
 };
 
-template<class _StreamType, class _BufferType>
+template<class _StreamType Extends(std::ios_base), class _BufferType Extends(std::basic_streambuf<char>)>
 class SocketStreamEx
     : public SocketStream
     , _StreamType
