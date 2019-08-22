@@ -275,26 +275,24 @@ namespace DNS
         class Message
         {
         protected:
-            union
-            {
-                char buffer[TCP_BUFFER_CAPACITY];
-                struct
-                {
-                    Header header;
-                    Question question;
-                };
-            };
+            Header header;
+            Question question;
+
             const Handler* hdlr;
         public:
             Message(const Handler* handler, const std::string& ip, const Network::PORT port)
                 : hdlr{ handler }
             {
+                char buffer[TCP_BUFFER_CAPACITY];
                 hdlr->sp->ReceiveFrom(sizeof(buffer), buffer, 0, ip, port);
 
+                memcpy(&header, buffer, sizeof(header));
                 NTOHS(header.qdcount);
                 NTOHS(header.ancount);
                 NTOHS(header.nscount);
                 NTOHS(header.arcount);
+
+                memcpy(&question, buffer + sizeof(header), sizeof(question));
             }
 
             bool IsQuery() const { return header.qr == 0; }
@@ -333,6 +331,8 @@ namespace DNS
                 return "Unknown";
             }
 
+            const Header& GetHeader() const { return header; }
+            const Question& GetQuestion() const { return question; }
             //virtual std::vector<ResourceRecord> GetAuthoritativeAnswers() const = 0;
             //virtual std::vector<ResourceRecord> GetAdditionalInformation() const = 0;
         };
@@ -354,7 +354,7 @@ namespace DNS
                 throw std::runtime_error(ss.str());
             }
 
-            const Header& header = message.header;
+            const Header& header = message.GetHeader();
 
             std::cout << "The response message contains:" << std::endl
                 << header.qdcount << " questions;" << std::endl
@@ -363,7 +363,7 @@ namespace DNS
                 << header.arcount << " additional records." << std::endl
                 << std::endl;
 
-            const Question& question = message.question;
+            const Question& question = message.GetQuestion();
 
 
             ResourceRecord* record;

@@ -4,6 +4,7 @@
 #include "network.h"
 
 #define RECV_BUFSIZE    4096
+#define WSAEL_recvfrom  {WSANOTINITIALISED,WSAENETDOWN,WSAEFAULT,WSAEINTR,WSAEINPROGRESS,WSAEINVAL,WSAEISCONN,WSAENETRESET,WSAENOTSOCK,WSAEOPNOTSUPP,WSAESHUTDOWN,WSAEWOULDBLOCK,WSAEMSGSIZE,WSAETIMEDOUT,WSAECONNRESET}
 
 void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how);
 void HandleError(_In_ const std::string& func_name, _In_opt_ std::vector<int> expected = std::vector<int>());
@@ -405,7 +406,8 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
     int nbytes = recvfrom(sock, buffer, length, flags, (sockaddr*)&name, &namelen);
     if (nbytes == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::ReceiveFrom");
+        const std::vector<int> expected WSAEL_recvfrom;
+        HandleError("Network::Socket::ReceiveFrom", expected);
         throw 1;
     }
 }
@@ -557,7 +559,7 @@ CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how)
 }
 
 #if OS == OS_WINDOWS
-void HandleErrorCode(std::string func_name, int code)
+void HandleErrorCode(_In_ const std::string& func_name, _In_ const int code)
 {
     std::ostringstream ss;
     ss << "ERR @ '"
@@ -571,12 +573,20 @@ void HandleErrorCode(std::string func_name, int code)
         ss << ("The address family specified in the Family parameter is not supported. "
             "This error is returned if the Family parameter specified "
             "was not AF_INET or AF_INET6.");
-        throw std::invalid_argument(ss.str());
+        break;
     case WSAEFAULT:
         ss << ("The pszAddrString or pAddrBuf parameters are NULL "
             "or are not part of the user address space.");
+        break;
+    }
+
+    std::cerr << ss.str();
+    if (code == WSAEAFNOSUPPORT || code == WSAEFAULT)
+    {
         throw std::invalid_argument(ss.str());
-    default:
+    }
+    else
+    {
         throw std::runtime_error("Unknown error!");
     }
 }
@@ -589,6 +599,15 @@ void
 HandleError(_In_ const std::string& func_name, _In_opt_ std::vector<int> expected)
 {
     int code = WSAGetLastError();
+    if (expected.empty())
+    {
+        std::cerr << "ERR @ '"
+            << func_name
+            << "' ("
+            << code
+            << ")";
+        return;
+    }
     for (const int value : expected)
     {
         if (code == value)
