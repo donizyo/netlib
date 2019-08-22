@@ -773,6 +773,7 @@ const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In
     }
     else if (winapi_func_name == "recv")
     {
+        // https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-recv
         switch (code)
         {
         case WSANOTINITIALISED:
