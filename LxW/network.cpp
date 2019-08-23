@@ -400,7 +400,7 @@ Network::Socket::
 ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const
 {
     sockaddr_in name = { 0 };
-    int namelen{ 0 };
+    int namelen{ sizeof(name) };
     HandleIPAddress(GetAddressFamily(), ip, port, name);
     int nbytes = recvfrom(sock, buffer, length, flags, (sockaddr*)&name, &namelen);
     if (nbytes == SOCKET_ERROR)
