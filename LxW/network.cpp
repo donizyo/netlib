@@ -315,7 +315,7 @@ Network::Socket::
 Accept() const
 {
     sockaddr_in addr = { 0 };
-    int addrlen{ 0 };
+    int addrlen{ sizeof(addr) };
     SOCKET s = accept(sock, (sockaddr*)(&addr), &addrlen);
     if (s == INVALID_SOCKET)
     {
