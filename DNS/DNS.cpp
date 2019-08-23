@@ -250,14 +250,13 @@ namespace DNS
         return res;
     }
 
-    template<class _SocketType Extends(Network::Socket)>
     class Handler
     {
     protected:
         Network::Socket* sp{ nullptr };
     public:
-        Handler(_In_ const std::string& address, _In_ const Network::PORT port)
-            : sp{ new _SocketType(address, port) }
+        Handler(_In_ Network::Socket* pSocket)
+            : sp{ pSocket }
         {
         }
         Handler() = delete;
@@ -272,16 +271,22 @@ namespace DNS
             }
         }
 
+
         class Message
         {
         protected:
-            Header header;
-            Question question;
+            Header header = { 0 };
+            Question question = { 0 };
 
-            const Handler* hdlr;
+            Handler* hdlr;
         public:
-            Message(const Handler* handler, const std::string& ip, const Network::PORT port)
-                : hdlr{ handler }
+            Message()
+                : hdlr{ nullptr }
+            {
+            }
+
+            Message(_In_ const Handler* handler, _In_ const std::string& ip, _In_ const Network::PORT port)
+                : hdlr{ const_cast<Handler*>(handler) }
             {
                 char buffer[TCP_BUFFER_CAPACITY];
                 hdlr->sp->ReceiveFrom(sizeof(buffer), buffer, 0, ip, port);
@@ -337,10 +342,10 @@ namespace DNS
             //virtual std::vector<ResourceRecord> GetAdditionalInformation() const = 0;
         };
 
-        ResourceRecord* Receive(const std::string& ip)
+        void Receive(_In_ const std::string& ip, _Out_ Message& message)
         {
             const static Network::PORT port = 53;
-            Message message(this, ip, port);
+            message = Message(this, ip, port);
 
             if (message.GetResponseCode() != 0)
             {
@@ -370,19 +375,17 @@ namespace DNS
             const size_t rrSize = sizeof(ResourceRecord);
             record = (ResourceRecord*)malloc(rrSize);
             memset(record, 0, rrSize);
-
-            return nullptr;
         }
     };
 
     template<class _SocketType Extends(Network::Socket)>
-    class Client : public Handler<_SocketType>
+    class Client : public Handler
     {
     protected:
         std::vector<std::string> forwarders;
     public:
         Client(const std::string& address, const Network::PORT port)
-            : Handler<_SocketType>(address, port)
+            : Handler(new _SocketType(address, port))
         {
         }
 
@@ -462,9 +465,13 @@ namespace DNS
     };
 
     template<class _SocketType Extends(Network::Socket)>
-    class Server : public Handler<_SocketType>
+    class Server : public Handler
     {
     public:
+        Server(const std::string& address, const Network::PORT port)
+            : Handler(new _SocketType(address, port))
+        {
+        }
     };
 
     class UdpServer : public Server<Network::UdpSocket>
@@ -502,7 +509,8 @@ namespace DNS
         client.Send(header);
         client.Send(encodedDomain);
 
-        client.Receive("8.8.8.8");
+        Handler::Message message;
+        client.Receive("8.8.8.8", message);
     }
 };
 
