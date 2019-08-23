@@ -378,6 +378,8 @@ namespace DNS
         }
     };
 
+    using Message = Handler::Message;
+
     template<class _SocketType Extends(Network::Socket)>
     class Client : public Handler
     {
@@ -509,7 +511,7 @@ namespace DNS
         client.Send(header);
         client.Send(encodedDomain);
 
-        Handler::Message message;
+        Message message;
         client.Receive("8.8.8.8", message);
     }
 };
