@@ -386,7 +386,7 @@ namespace DNS
     protected:
         std::vector<std::string> forwarders;
     public:
-        Client(const std::string& address, const Network::PORT port)
+        Client(_In_ const std::string& address, _In_ const Network::PORT port)
             : Handler(new _SocketType(address, port))
         {
         }
@@ -399,19 +399,19 @@ namespace DNS
             forwarders.push_back(ip);
         }
 
-        virtual void Send(const Header& header) const = 0;
-        virtual void Send(const std::string& str) const = 0;
+        virtual void Send(_In_ const Header& header) const = 0;
+        virtual void Send(_In_ const std::string& str) const = 0;
     };
 
     class UdpClient : public Client<Network::UdpSocket>
     {
     public:
-        UdpClient(const std::string& address, const Network::PORT port)
+        UdpClient(_In_ const std::string& address, _In_ const Network::PORT port)
             : Client(address, port)
         {
         }
 
-        void Send(const Header& header) const
+        void Send(_In_ const Header& header) const
         {
             const static Network::PORT port = 53;
             for (auto ip : forwarders)
@@ -423,7 +423,7 @@ namespace DNS
             }
         }
 
-        void Send(const std::string& str) const
+        void Send(_In_ const std::string& str) const
         {
             const static Network::PORT port = 53;
             for (auto ip : forwarders)
@@ -439,7 +439,7 @@ namespace DNS
     class TcpClient : public Client<Network::TcpSocket>
     {
     public:
-        void Send(const Header& header) const
+        void Send(_In_ const Header& header) const
         {
             const static Network::PORT port = 53;
             for (auto ip : forwarders)
@@ -452,7 +452,7 @@ namespace DNS
             }
         }
 
-        void Send(const std::string& str) const
+        void Send(_In_ const std::string& str) const
         {
             const static Network::PORT port = 53;
             for (auto ip : forwarders)
@@ -470,7 +470,7 @@ namespace DNS
     class Server : public Handler
     {
     public:
-        Server(const std::string& address, const Network::PORT port)
+        Server(_In_ const std::string& address, _In_ const Network::PORT port)
             : Handler(new _SocketType(address, port))
         {
         }
