@@ -723,18 +723,232 @@ const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In
     }
     else if (winapi_func_name == "connect")
     {
+        // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect
+        switch (code)
+        {
+        case WSANOTINITIALISED:
+            result = "A successful WSAStartup call must occur before using this function.";
+            break;
+        case WSAENETDOWN:
+            result = "The network subsystem has failed.";
+            break;
+        case WSAEADDRINUSE:
+            result = "The socket's local address is already in use and the socket was not marked to allow address reuse with SO_REUSEADDR. This error usually occurs when executing bind, but could be delayed until the connect function if the bind was to a wildcard address (INADDR_ANY or in6addr_any) for the local IP address. A specific address needs to be implicitly bound by the connect function.";
+            break;
+        case WSAEINTR:
+            result = "The blocking Windows Socket 1.1 call was canceled through WSACancelBlockingCall.";
+            break;
+        case WSAEINPROGRESS:
+            result = "A blocking Windows Sockets 1.1 call is in progress, or the service provider is still processing a callback function.";
+            break;
+        case WSAEALREADY:
+            result = "A nonblocking connect call is in progress on the specified socket. ";
+            break;
+        case WSAEADDRNOTAVAIL:
+            result = "The remote address is not a valid address (such as INADDR_ANY or in6addr_any) .";
+            break;
+        case WSAEAFNOSUPPORT:
+            result = "Addresses in the specified family cannot be used with this socket.";
+            break;
+        case WSAECONNREFUSED:
+            result = "The attempt to connect was forcefully rejected.";
+            break;
+        case WSAEFAULT:
+            result = "The sockaddr structure pointed to by the name contains incorrect address format for the associated address family or the namelen parameter is too small. This error is also returned if the sockaddr structure pointed to by the name parameter with a length specified in the namelen parameter is not in a valid part of the user address space.";
+            break;
+        case WSAEINVAL:
+            result = "The parameter s is a listening socket.";
+            break;
+        case WSAEISCONN:
+            result = "The socket is already connected (connection-oriented sockets only).";
+            break;
+        case WSAENETUNREACH:
+            result = "The network cannot be reached from this host at this time.";
+            break;
+        case WSAEHOSTUNREACH:
+            result = "A socket operation was attempted to an unreachable host.";
+            break;
+        case WSAENOBUFS:
+            result = "No buffer space is available. The socket cannot be connected.";
+            break;
+        case WSAENOTSOCK:
+            result = "The descriptor specified in the s parameter is not a socket.";
+            break;
+        case WSAETIMEDOUT:
+            result = "An attempt to connect timed out without establishing a connection.";
+            break;
+        case WSAEWOULDBLOCK:
+            result = "The socket is marked as nonblocking and the connection cannot be completed immediately.";
+            break;
+        case WSAEACCES:
+            result = "An attempt to connect a datagram socket to broadcast address failed because setsockopt option SO_BROADCAST is not enabled.";
+            break;
+        }
     }
     else if (winapi_func_name == "shutdown")
     {
+        // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-shutdown
+        switch (code)
+        {
+        case WSAECONNABORTED:
+            result = "The virtual circuit was terminated due to a time-out or other failure. The application should close the socket as it is no longer usable. This error applies only to a connection-oriented socket.";
+            break;
+        case WSAECONNRESET:
+            result = "The virtual circuit was reset by the remote side executing a hard or abortive close. The application should close the socket as it is no longer usable. This error applies only to a connection-oriented socket.";
+            break;
+        case WSAEINPROGRESS:
+            result = "A blocking Windows Sockets 1.1 call is in progress, or the service provider is still processing a callback function.";
+            break;
+        case WSAEINVAL:
+            result = "The how parameter is not valid, or is not consistent with the socket type. For example, SD_SEND is used with a UNI_RECV socket type.";
+            break;
+        case WSAENETDOWN:
+            result = "The network subsystem has failed.";
+            break;
+        case WSAENOTCONN:
+            result = "The socket is not connected. This error applies only to a connection-oriented socket.";
+            break;
+        case WSAENOTSOCK:
+            result = "The descriptor is not a socket.";
+            break;
+        case WSANOTINITIALISED:
+            result = "A successful WSAStartup call must occur before using this function.";
+            break;
+        }
     }
     else if (winapi_func_name == "listen")
     {
+        // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen
+        switch (code)
+        {
+        case WSANOTINITIALISED:
+            result = "A successful WSAStartup call must occur before using this function.";
+        case WSAENETDOWN:
+            result = "The network subsystem has failed.";
+        case WSAEADDRINUSE:
+            result = "The socket's local address is already in use and the socket was not marked to allow address reuse with SO_REUSEADDR. This error usually occurs during execution of the bind function, but could be delayed until this function if the bind was to a partially wildcard address (involving ADDR_ANY) and if a specific address needs to be committed at the time of this function.";
+        case WSAEINPROGRESS:
+            result = "A blocking Windows Sockets 1.1 call is in progress, or the service provider is still processing a callback function.";
+        case WSAEINVAL:
+            result = "The socket has not been bound with bind.";
+        case WSAEISCONN:
+            result = "The socket is already connected.";
+        case WSAEMFILE:
+            result = "No more socket descriptors are available.";
+        case WSAENOBUFS:
+            result = "No buffer space is available.";
+        case WSAENOTSOCK:
+            result = "The descriptor is not a socket.";
+        case WSAEOPNOTSUPP:
+            result = "The referenced socket is not of a type that supports the listen operation.";
+        }
     }
     else if (winapi_func_name == "accept")
     {
+        // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-accept
+        switch (code)
+        {
+        case WSANOTINITIALISED:
+            result = "A successful WSAStartup call must occur before using this function.";
+            break;
+        case WSAECONNRESET:
+            result = "An incoming connection was indicated, but was subsequently terminated by the remote peer prior to accepting the call.";
+            break;
+        case WSAEFAULT:
+            result = "The addrlen parameter is too small or addr is not a valid part of the user address space.";
+            break;
+        case WSAEINTR:
+            result = "A blocking Windows Sockets 1.1 call was canceled through WSACancelBlockingCall.";
+            break;
+        case WSAEINVAL:
+            result = "The listen function was not invoked prior to accept.";
+            break;
+        case WSAEINPROGRESS:
+            result = "A blocking Windows Sockets 1.1 call is in progress, or the service provider is still processing a callback function.";
+            break;
+        case WSAEMFILE:
+            result = "The queue is nonempty upon entry to accept and there are no descriptors available.";
+            break;
+        case WSAENETDOWN:
+            result = "The network subsystem has failed.";
+            break;
+        case WSAENOBUFS:
+            result = "No buffer space is available.";
+            break;
+        case WSAENOTSOCK:
+            result = "The descriptor is not a socket.";
+            break;
+        case WSAEOPNOTSUPP:
+            result = "The referenced socket is not a type that supports connection-oriented service.";
+            break;
+        case WSAEWOULDBLOCK:
+            result = "The socket is marked as nonblocking and no connections are present to be accepted.";
+            break;
+        }
     }
     else if (winapi_func_name == "send")
     {
+        // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send
+        switch (code)
+        {
+        case WSANOTINITIALISED:
+            result = "A successful WSAStartup call must occur before using this function.";
+            break;
+        case WSAENETDOWN:
+            result = "The network subsystem has failed.";
+            break;
+        case WSAEACCES:
+            result = "The requested address is a broadcast address, but the appropriate flag was not set. Call setsockopt with the SO_BROADCAST socket option to enable use of the broadcast address.";
+            break;
+        case WSAEINTR:
+            result = "A blocking Windows Sockets 1.1 call was canceled through WSACancelBlockingCall.";
+            break;
+        case WSAEINPROGRESS:
+            result = "A blocking Windows Sockets 1.1 call is in progress, or the service provider is still processing a callback function.";
+            break;
+        case WSAEFAULT:
+            result = "The buf parameter is not completely contained in a valid part of the user address space.";
+            break;
+        case WSAENETRESET:
+            result = "The connection has been broken due to the keep-alive activity detecting a failure while the operation was in progress.";
+            break;
+        case WSAENOBUFS:
+            result = "No buffer space is available.";
+            break;
+        case WSAENOTCONN:
+            result = "The socket is not connected.";
+            break;
+        case WSAENOTSOCK:
+            result = "The descriptor is not a socket.";
+            break;
+        case WSAEOPNOTSUPP:
+            result = "MSG_OOB was specified, but the socket is not stream-style such as type SOCK_STREAM, OOB data is not supported in the communication domain associated with this socket, or the socket is unidirectional and supports only receive operations.";
+            break;
+        case WSAESHUTDOWN:
+            result = "The socket has been shut down; it is not possible to send on a socket after shutdown has been invoked with how set to SD_SEND or SD_BOTH.";
+            break;
+        case WSAEWOULDBLOCK:
+            result = "The socket is marked as nonblocking and the requested operation would block.";
+            break;
+        case WSAEMSGSIZE:
+            result = "The socket is message oriented, and the message is larger than the maximum supported by the underlying transport.";
+            break;
+        case WSAEHOSTUNREACH:
+            result = "The remote host cannot be reached from this host at this time.";
+            break;
+        case WSAEINVAL:
+            result = "The socket has not been bound with bind, or an unknown flag was specified, or MSG_OOB was specified for a socket with SO_OOBINLINE enabled.";
+            break;
+        case WSAECONNABORTED:
+            result = "The virtual circuit was terminated due to a time-out or other failure. The application should close the socket as it is no longer usable.";
+            break;
+        case WSAECONNRESET:
+            result = "The virtual circuit was reset by the remote side executing a hard or abortive close. For UDP sockets, the remote host was unable to deliver a previously sent UDP datagram and responded with a \"Port Unreachable\" ICMP packet. The application should close the socket as it is no longer usable.";
+            break;
+        case WSAETIMEDOUT:
+            result = "The connection has been dropped, because of a network failure or because the system on the other end went down without notice.";
+            break;
+        }
     }
     else if (winapi_func_name == "sendto")
     {
