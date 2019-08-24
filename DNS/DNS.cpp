@@ -506,13 +506,15 @@ namespace DNS
 
         UdpClient client("127.0.0.1", 0);
 
-        client.AddForwarder("8.8.8.8");
+        const std::string forwarder{ "80.80.80.80" };
+
+        client.AddForwarder(forwarder);
 
         client.Send(header);
         client.Send(encodedDomain);
 
         Message message;
-        client.Receive("8.8.8.8", message);
+        client.Receive(forwarder, message);
     }
 };
 
