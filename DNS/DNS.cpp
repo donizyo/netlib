@@ -371,11 +371,16 @@ namespace DNS
 
             const Question& question = message.GetQuestion();
 
-
-            ResourceRecord* record;
+#if 0
+            ResourceRecord* record = nullptr;
             const size_t rrSize = sizeof(ResourceRecord);
             record = (ResourceRecord*)malloc(rrSize);
-            memset(record, 0, rrSize);
+            if (record)
+            {
+                memset(record, 0, rrSize);
+                free(record);
+            }
+#endif
         }
     };
 
