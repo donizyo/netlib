@@ -289,6 +289,7 @@ namespace DNS
                 : hdlr{ const_cast<Handler*>(handler) }
             {
                 char buffer[TCP_BUFFER_CAPACITY];
+                memset(buffer, 0, sizeof(buffer));
                 hdlr->sp->ReceiveFrom(sizeof(buffer), buffer, 0, ip, port);
 
                 memcpy(&header, buffer, sizeof(header));
