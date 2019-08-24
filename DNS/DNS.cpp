@@ -343,24 +343,24 @@ namespace DNS
             //virtual std::vector<ResourceRecord> GetAdditionalInformation() const = 0;
         };
 
-        void Receive(_In_ const std::string& ip, _Out_ Message& message)
+        void Receive(_In_ const std::string& ip, _Out_ const Message* message)
         {
             const static Network::PORT port = 53;
-            message = Message(this, ip, port);
+            message = new Message(this, ip, port);
 
-            if (message.GetResponseCode() != 0)
+            if (message->GetResponseCode() != 0)
             {
                 std::ostringstream ss;
                 ss << "Invalid DNS response (rcode: "
-                    << message.GetResponseCode()
+                    << message->GetResponseCode()
                     << " "
-                    << message.GetResponseString()
+                    << message->GetResponseString()
                     << ")";
                 std::cerr << ss.str();
                 throw std::runtime_error(ss.str());
             }
 
-            const Header& header = message.GetHeader();
+            const Header& header = message->GetHeader();
 
             std::cout << "The response message contains:" << std::endl
                 << header.qdcount << " questions;" << std::endl
@@ -369,7 +369,7 @@ namespace DNS
                 << header.arcount << " additional records." << std::endl
                 << std::endl;
 
-            const Question& question = message.GetQuestion();
+            const Question& question = message->GetQuestion();
 
 #if 0
             ResourceRecord* record = nullptr;
@@ -520,7 +520,7 @@ namespace DNS
         client.Send(encodedDomain);
 
         Message message;
-        client.Receive(forwarder, message);
+        client.Receive(forwarder, &message);
     }
 };
 
