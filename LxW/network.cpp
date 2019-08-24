@@ -399,6 +399,15 @@ void
 Network::Socket::
 ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const
 {
+    std::clog << "Net> Network::Socket::ReceiveFrom(length=" << length
+        << ", buffer=[]"
+        << ", flags=" << flags
+        << ", ip=" << ip
+        << ", port=" << port
+        << ")"
+        << std::endl;
+
+
     sockaddr_in name = { 0 };
     int namelen{ sizeof(name) };
     HandleIPAddress(GetAddressFamily(), ip, port, name);
