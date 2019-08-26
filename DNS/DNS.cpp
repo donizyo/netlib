@@ -263,8 +263,7 @@ namespace DNS
         {
             if (!out_msg || out_size != buffer_size)
             {
-                if (out_msg)
-                    free(out_msg);
+                DestroyBuffer();
                 out_size = buffer_size;
                 out_mark = 0;
                 out_msg = (char*)malloc(buffer_size);
@@ -286,6 +285,15 @@ namespace DNS
             out_mark = new_mark;
             return true;
         }
+
+        void DestroyBuffer()
+        {
+            if (out_msg)
+            {
+                free(out_msg);
+                out_msg = nullptr;
+            }
+        }
     public:
         Handler(_In_ Network::Socket* pSocket)
             : sp{ pSocket }
@@ -301,6 +309,7 @@ namespace DNS
                 delete sp;
                 sp = nullptr;
             }
+            DestroyBuffer();
         }
 
 
