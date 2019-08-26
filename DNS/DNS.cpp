@@ -254,6 +254,38 @@ namespace DNS
     {
     protected:
         Network::Socket* sp{ nullptr };
+    private:
+        size_t out_size{ 0 };
+        size_t out_mark{ 0 };
+        char* out_msg{ nullptr };
+    protected:
+        bool NewBuffer(_In_ size_t buffer_size)
+        {
+            if (!out_msg || out_size != buffer_size)
+            {
+                if (out_msg)
+                    free(out_msg);
+                out_size = buffer_size;
+                out_mark = 0;
+                out_msg = (char*)malloc(buffer_size);
+                return out_msg != nullptr;
+            }
+            else
+            {
+                out_mark = 0;
+                return true;
+            }
+        }
+
+        bool WriteBuffer(const char* input, size_t input_size)
+        {
+            size_t new_mark = out_mark + input_size;
+            if (new_mark > out_size)
+                return false;
+            memcpy(&out_msg[out_mark], input, input_size);
+            out_mark = new_mark;
+            return true;
+        }
     public:
         Handler(_In_ Network::Socket* pSocket)
             : sp{ pSocket }
@@ -349,6 +381,19 @@ namespace DNS
         void Receive(_In_ const std::string& ip, _Out_ const Message* message)
         {
             const static Network::PORT port = 53;
+
+            if (out_msg)
+            {
+                std::cout << "DNS> Try to reach IP - "
+                    << ip
+                    << std::endl;
+                sp->SendTo(out_mark, out_msg, 0, ip, port);
+            }
+            else
+            {
+                return;
+            }
+
             message = new Message(this, ip, port);
 
             if (message->GetResponseCode() != 0)
@@ -419,13 +464,14 @@ namespace DNS
 
         void Send(_In_ const Header& header) const
         {
+            const_cast<UdpClient*>(this)->NewBuffer(TCP_BUFFER_CAPACITY);
+
             const static Network::PORT port = 53;
             for (auto ip : forwarders)
             {
-                std::cout << "DNS> Try to reach IP - "
-                    << ip
-                    << std::endl;
-                sp->SendTo(sizeof(header), (const char*)&header, 0, ip, port);
+                const_cast<UdpClient*>(this)->WriteBuffer((const char*)&header, sizeof(header));
+                // debug
+                break;
             }
         }
 
@@ -434,10 +480,9 @@ namespace DNS
             const static Network::PORT port = 53;
             for (auto ip : forwarders)
             {
-                std::cout << "DNS> Try to reach IP - "
-                    << ip
-                    << std::endl;
-                sp->SendTo(str.length(), str.c_str(), 0, ip, port);
+                const_cast<UdpClient*>(this)->WriteBuffer(str.c_str(), str.length());
+                // debug
+                break;
             }
         }
     };
