@@ -343,6 +343,9 @@ namespace DNS
             //virtual std::vector<ResourceRecord> GetAdditionalInformation() const = 0;
         };
 
+        virtual void Send(_In_ const Header& header) const = 0;
+        virtual void Send(_In_ const std::string& str) const = 0;
+
         void Receive(_In_ const std::string& ip, _Out_ const Message* message)
         {
             const static Network::PORT port = 53;
@@ -404,9 +407,6 @@ namespace DNS
                 << std::endl;
             forwarders.push_back(ip);
         }
-
-        virtual void Send(_In_ const Header& header) const = 0;
-        virtual void Send(_In_ const std::string& str) const = 0;
     };
 
     class UdpClient : public Client<Network::UdpSocket>
