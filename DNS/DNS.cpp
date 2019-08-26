@@ -512,7 +512,7 @@ namespace DNS
 
         UdpClient client("127.0.0.1", 0);
 
-        const std::string forwarder{ "80.80.80.80" };
+        const std::string forwarder{ "114.114.114.114" };
 
         client.AddForwarder(forwarder);
 
