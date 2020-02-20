@@ -138,6 +138,23 @@ namespace Network
 #endif
     };
 
+    class IP
+    {
+    private:
+        std::string ip;
+        IP(const std::string& ip);
+
+    public:
+        static IP Construct(const std::string& ip);
+    };
+
+    class InvalidIPException
+        : public std::runtime_error
+    {
+    public:
+        explicit InvalidIPException(const std::string& ip);
+    };
+
     using PORT = std::int16_t;
 
     class DllExport Socket

@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="ip.cpp" />
     <ClCompile Include="LxW.cpp" />
     <ClCompile Include="network.cpp" />
     <ClCompile Include="stdafx.cpp">
