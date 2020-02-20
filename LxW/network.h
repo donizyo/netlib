@@ -87,7 +87,7 @@ int DllExport EndNetwork();
 
 namespace Network
 {
-    enum AddressFamily : int
+    enum class AddressFamily : int
     {
         /*
         The Internet Protocol version 4 (IPv4) address family.
@@ -99,7 +99,7 @@ namespace Network
         IPv6 = AF_INET6,
     };
 
-    enum SocketType : int
+    enum class SocketType : int
     {
         /*
         A socket type that provides sequenced, reliable, two-way,
@@ -125,7 +125,7 @@ namespace Network
         Raw = SOCK_RAW,
     };
 
-    enum Shutdown : int
+    enum class Shutdown : int
     {
 #if OS == OS_WINDOWS
         Read = SD_RECEIVE,

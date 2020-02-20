@@ -11,7 +11,7 @@ namespace DNS
     TYPE fields are used in resource records. Note that these types are a
     subset of QTYPEs.
     */
-    enum RecordType : uint8_t
+    enum class RecordType : uint8_t
     {
         // RFC 1035
         RT_A = 1, // a host address
@@ -38,7 +38,7 @@ namespace DNS
     QTYPE fields appear in the question part of a query. QTYPES are a
     superset of TYPEs, hence all TYPEs are valid QTYPEs.
     */
-    enum QuestionType : uint8_t
+    enum class QuestionType : uint8_t
     {
         // RFC 1035
         QT_AXFR = 252, // A request for a transfer of an entire zone
@@ -50,7 +50,7 @@ namespace DNS
     /*
     CLASS fields appear in resource records.
     */
-    enum ClassValue
+    enum class ClassValue
     {
         CV_IN = 1, // the Internet
         CV_CS = 2, // the CSNET class (Obsolete - used only for examples in some obsolete RFCs)
@@ -62,7 +62,7 @@ namespace DNS
     QCLASS fields appear in the question section of a query. QCLASS values
     are a superset of CLASS values; every CLASS is a valid QCLASS.
     */
-    enum QuestionClassValue
+    enum class QuestionClassValue
     {
         CV_ANY = 255, // any class
     };
