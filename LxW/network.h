@@ -172,6 +172,7 @@ namespace Network
         void Receive(_Inout_ std::vector<char>& buff, _In_ const int flags);
 
         void ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const;
+        void ReceiveFrom(_Inout_ std::vector<char>& buff, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port);
 
         void Select();
 

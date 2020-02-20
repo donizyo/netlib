@@ -428,6 +428,13 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
 
 void
 Network::Socket::
+ReceiveFrom(_Inout_ std::vector<char>& buff, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port)
+{
+    ReceiveFrom(buff.capacity(), buff.data(), flags, ip, port);
+}
+
+void
+Network::Socket::
 Select()
 {
     fd_set master;
