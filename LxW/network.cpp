@@ -397,6 +397,13 @@ Receive(_In_ const int bufsize, _Out_writes_bytes_all_(bufsize) char* buf, _In_ 
 
 void
 Network::Socket::
+Receive(_Inout_ std::vector<char>& buff, _In_ const int flags)
+{
+    Receive(buff.capacity(), buff.data(), flags);
+}
+
+void
+Network::Socket::
 ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const
 {
     std::clog << "Net> Network::Socket::ReceiveFrom(length=" << length
