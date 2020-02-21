@@ -397,12 +397,12 @@ Receive(_Inout_ std::vector<char>& buff, _In_ const int flags)
 
 void
 Network::Socket::
-ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const
+ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port) const
 {
     std::clog << "Net> Network::Socket::ReceiveFrom(length=" << length
         << ", buffer=[]"
         << ", flags=" << flags
-        << ", ip=" << ip
+        << ", ip=" << ip.data()
         << ", port=" << port
         << ")"
         << std::endl;
@@ -410,7 +410,7 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
 
     sockaddr_in name = { 0 };
     int namelen{ sizeof(name) };
-    HandleIPAddress(static_cast<int>(this->family), ip, port, name);
+    HandleIPAddress(static_cast<int>(this->family), ip.data().c_str(), port, name);
     int nbytes = recvfrom(sock, buffer, length, flags, (sockaddr*)&name, &namelen);
     if (nbytes == SOCKET_ERROR)
     {
@@ -421,7 +421,7 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
 
 void
 Network::Socket::
-ReceiveFrom(_Inout_ std::vector<char>& buff, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port)
+ReceiveFrom(_Inout_ std::vector<char>& buff, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port)
 {
     ReceiveFrom(buff.capacity(), buff.data(), flags, ip, port);
 }
