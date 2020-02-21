@@ -5,22 +5,16 @@
 
 using namespace Network;
 
+const static std::string pattern{ R"(^(?:(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$)" };
+const static std::regex rgx_ipv4{ pattern, std::regex_constants::ECMAScript };
+
 IP::
 IP(const std::string& ip)
     : ip{ ip }
 {
-}
-
-IP
-IP::
-Construct(const std::string& ip)
-{
-    const std::string pattern{ R"(^(?:(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$)" };
-    const std::regex rgx_ipv4{ pattern, std::regex_constants::ECMAScript };
     std::smatch match;
-    if (std::regex_match(ip, match, rgx_ipv4))
-        return IP{ ip };
-    throw InvalidIPException{ ip };
+    if (!std::regex_match(ip, match, rgx_ipv4))
+        throw InvalidIPException{ ip };
 }
 
 const std::string&

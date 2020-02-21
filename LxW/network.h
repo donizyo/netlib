@@ -142,10 +142,9 @@ namespace Network
     {
     private:
         const std::string ip;
-        IP(const std::string& ip);
 
     public:
-        DllExport static IP Construct(_In_ const std::string& ip);
+        DllExport IP(const std::string& ip);
 
         DllExport const std::string& data() const;
     };
