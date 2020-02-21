@@ -234,10 +234,10 @@ using namespace Network;
 
 Network::Socket::
 Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::string& address, _In_ const PORT port)
+    : family{ af }
+    , type{ type }
+    , sock{ NewSocket(static_cast<int>(af), static_cast<int>(type), 0, address.c_str(), port) }
 {
-    addressFamily = static_cast<int>(af);
-    socketType = static_cast<int>(type);
-    sock = NewSocket(addressFamily, socketType, 0, address.c_str(), port);
 }
 
 Network::Socket::
@@ -257,19 +257,12 @@ GetHandle() const
     return sock;
 }
 
-const int
-Network::Socket::
-GetAddressFamily() const
-{
-    return addressFamily;
-}
-
 void
 Network::Socket::
 Connect(_In_ const std::string& address, _In_ const PORT port) const
 {
     sockaddr_in name = { 0 };
-    HandleIPAddress(GetAddressFamily(), address.c_str(), port, name);
+    HandleIPAddress(static_cast<int>(this->family), address.c_str(), port, name);
     if (connect(sock, (SOCKADDR *)&name, sizeof(name)) != 0)
     {
         HandleError("Network::Socket::Connect", "connect");
@@ -362,7 +355,7 @@ SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags,
         return;
 
     sockaddr_in name = { 0 };
-    HandleIPAddress(GetAddressFamily(), ip, port, name);
+    HandleIPAddress(static_cast<int>(this->family), ip, port, name);
     int nbytes = sendto(sock, buffer, length, flags, (sockaddr*)&name, sizeof(name));
     if (nbytes == SOCKET_ERROR)
     {
@@ -417,7 +410,7 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
 
     sockaddr_in name = { 0 };
     int namelen{ sizeof(name) };
-    HandleIPAddress(GetAddressFamily(), ip, port, name);
+    HandleIPAddress(static_cast<int>(this->family), ip, port, name);
     int nbytes = recvfrom(sock, buffer, length, flags, (sockaddr*)&name, &namelen);
     if (nbytes == SOCKET_ERROR)
     {

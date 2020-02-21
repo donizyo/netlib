@@ -180,8 +180,8 @@ namespace Network
     {
     private:
         SOCKET sock{ INVALID_SOCKET };
-        int addressFamily{ 0 };
-        int socketType{ 0 };
+        const AddressFamily family;
+        const SocketType type;
     public:
         Socket() = delete;
         Socket(const Socket &) = delete;
@@ -189,7 +189,6 @@ namespace Network
         ~Socket();
 
         const SOCKET& GetHandle() const;
-        const int GetAddressFamily() const;
 
         void Connect(_In_ const std::string& address, _In_ const PORT port) const;
         void Disconnect() const;
