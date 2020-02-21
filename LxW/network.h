@@ -145,7 +145,7 @@ namespace Network
         IP(const std::string& ip);
 
     public:
-        DllExport static IP Construct(const std::string& ip);
+        DllExport static IP Construct(_In_ const std::string& ip);
 
         DllExport const std::string& data() const;
     };
@@ -154,7 +154,7 @@ namespace Network
         : public std::runtime_error
     {
     public:
-        DllExport explicit InvalidIPException(const std::string& ip);
+        DllExport explicit InvalidIPException(_In_ const std::string& ip);
     };
 
     using PORT = std::uint16_t; /* 0-65535 */
@@ -168,7 +168,7 @@ namespace Network
         const PORT port;
 
     public:
-        DllExport SocketAddress(const AddressFamily af, const IP& ip, const PORT port);
+        DllExport SocketAddress(_In_ const AddressFamily af, _In_ const IP& ip, _In_ const PORT port);
 
         DllExport const sockaddr_in& GetName() const;
         DllExport const AddressFamily& GetFamily() const;
