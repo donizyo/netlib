@@ -153,6 +153,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="address.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ip.cpp" />
     <ClCompile Include="LxW.cpp" />

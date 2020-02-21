@@ -141,21 +141,40 @@ namespace Network
     class IP
     {
     private:
-        std::string ip;
+        const std::string ip;
         IP(const std::string& ip);
 
     public:
-        static IP Construct(const std::string& ip);
+        DllExport static IP Construct(const std::string& ip);
+
+        DllExport const std::string& data() const;
     };
 
     class InvalidIPException
         : public std::runtime_error
     {
     public:
-        explicit InvalidIPException(const std::string& ip);
+        DllExport explicit InvalidIPException(const std::string& ip);
     };
 
-    using PORT = std::int16_t;
+    using PORT = std::uint16_t; /* 0-65535 */
+
+    class SocketAddress
+    {
+    private:
+        sockaddr_in name;
+        const AddressFamily family;
+        const IP ip;
+        const PORT port;
+
+    public:
+        DllExport SocketAddress(const AddressFamily af, const IP& ip, const PORT port);
+
+        DllExport const sockaddr_in& GetName() const;
+        DllExport const AddressFamily& GetFamily() const;
+        DllExport const IP& GetIP() const;
+        DllExport const PORT GetPort() const;
+    };
 
     class DllExport Socket
     {

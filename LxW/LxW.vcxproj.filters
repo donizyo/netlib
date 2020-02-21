@@ -41,5 +41,8 @@
     <ClCompile Include="ip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="address.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

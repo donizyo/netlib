@@ -23,6 +23,13 @@ Construct(const std::string& ip)
     throw InvalidIPException{ ip };
 }
 
+const std::string&
+IP::
+data() const
+{
+    return ip;
+}
+
 static inline std::string FormatInvalidIPExceptionMessage(const std::string& ip)
 {
     std::stringstream ss;
