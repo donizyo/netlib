@@ -11,7 +11,7 @@ void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how);
 void HandleError(_In_ const std::string&& func_name, _In_ const std::string&& winapi_func_name);
 
 #if OS == OS_WINDOWS
-WSADATA wsaData;
+WSADATA wsaData{ 0 };
 std::atomic_bool isInitialized{ false };
 
 int
@@ -25,8 +25,6 @@ InitNetwork()
     isInitialized = true;
 
     std::clog << "WSA> Start up ..." << std::endl;
-
-    memset(&wsaData, 0, sizeof(wsaData));
 
     WORD wVersionRequested = MAKEWORD(2, 2);
     int errcode = WSAStartup(wVersionRequested, &wsaData);
