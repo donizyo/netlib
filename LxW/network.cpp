@@ -1103,3 +1103,9 @@ HandleError(std::string func_name)
     perror(ss.str().c_str());
 }
 #endif
+
+SocketException::
+SocketException(_In_ const std::string& message)
+    : std::runtime_error(message)
+{
+}

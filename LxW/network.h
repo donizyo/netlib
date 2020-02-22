@@ -156,6 +156,13 @@ namespace Network
         DllExport explicit InvalidIPException(_In_ const std::string& ip);
     };
 
+    class SocketException
+        : public std::runtime_error
+    {
+    public:
+        DllExport explicit SocketException(_In_ const std::string& message);
+    };
+
     using PORT = std::uint16_t; /* 0-65535 */
 
     class SocketAddress
