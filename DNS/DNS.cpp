@@ -52,10 +52,10 @@ namespace DNS
     */
     enum class ClassValue
     {
-        CV_IN = 1, // the Internet
-        CV_CS = 2, // the CSNET class (Obsolete - used only for examples in some obsolete RFCs)
-        CV_CH = 3, // the CHAOS class
-        CV_HS = 4, // Hesiod [Dyer 87]
+        CV_IN       = 1,    // the Internet
+        CV_CS       = 2,    // the CSNET class (Obsolete - used only for examples in some obsolete RFCs)
+        CV_CH       = 3,    // the CHAOS class
+        CV_HS       = 4,    // Hesiod [Dyer 87]
     };
 
     /*
@@ -64,7 +64,7 @@ namespace DNS
     */
     enum class QuestionClassValue
     {
-        CV_ANY = 255, // any class
+        CV_ANY      = 255,  // any class
     };
 
     // 4. Messages
