@@ -131,10 +131,7 @@ namespace DNS
         uint16_t _class;
         uint32_t ttl;
         uint16_t data_len;
-// @see: https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-levels-2-and-4-c4200?view=vs-2019
-#pragma warning(disable : 4200)
-        char rdata[];
-#pragma warning(default : 4200)
+        std::vector<char> rdata;
     };
 #pragma pack(pop)
 
