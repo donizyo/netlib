@@ -252,12 +252,12 @@ Send(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags) c
 
 void
 Network::Socket::
-SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const std::string& ip, _In_ const PORT port) const
+SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port) const
 {
     std::clog << "Net> Network::Socket::SendTo(length=" << length
         << ", buffer=[]"
         << ", flags=" << flags
-        << ", ip=" << ip
+        << ", ip=" << ip.data()
         << ", port=" << port
         << ")"
         << std::endl;
