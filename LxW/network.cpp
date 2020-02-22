@@ -5,7 +5,7 @@
 
 using namespace Network;
 
-#define RECV_BUFSIZE    4096
+constexpr static int RECV_BUFSIZE{ 4096 };
 
 void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how);
 void HandleError(_In_ const std::string&& func_name, _In_ const std::string&& winapi_func_name);
