@@ -82,8 +82,8 @@ class Vector {};
 
 typedef SOCKET * SOCKPTR;
 
-int DllExport InitNetwork();
-int DllExport EndNetwork();
+extern int DllExport InitNetwork();
+extern int DllExport EndNetwork();
 
 namespace Network
 {
