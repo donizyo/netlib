@@ -3,6 +3,8 @@
 #ifndef SOCKETAPI
 #include "network.h"
 
+using namespace Network;
+
 #define RECV_BUFSIZE    4096
 
 void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how);
@@ -91,105 +93,15 @@ EndNetwork()
 #   define fdctl fcntl
 #endif
 
-void
-HandleIPAddress(_In_ int af, _In_ const char * addr, _In_ const Network::PORT port, _Out_ sockaddr_in& name)
-{
-#ifdef _DEBUG
-    std::clog << "Net> HandleIPAddress(af=" << af
-        << ", addr=" << addr
-        << ", port=" << port
-        << ", name={}"
-        << ")"
-        << std::endl;
-#endif
-
-    switch (af)
-    {
-    case AF_INET:
-    case AF_INET6:
-        break;
-    default:
-        {
-            std::ostringstream ss;
-            ss << "Invalid parameter 'af': "
-                    << std::hex
-                    << std::uppercase
-                    << "0x"
-                    << af
-                    << std::dec;
-            auto msg = ss.str();
-#ifdef _DEBUG
-            std::cerr << msg
-                << std::endl;
-#endif
-            throw std::invalid_argument(msg);
-        }
-    }
-
-    if (addr == nullptr)
-    {
-        auto msg = "Invalid parameter 'addr': null";
-#ifdef _DEBUG
-        std::cerr << msg
-            << std::endl;
-#endif
-        throw std::invalid_argument(msg);
-    }
-
-    if (0 > port || port > 65535)
-    {
-        std::ostringstream ss;
-        ss << "Invalid parameter 'port': "
-            << port;
-        auto msg = ss.str();
-#ifdef _DEBUG
-        std::cerr << msg
-            << std::endl;
-#endif
-        throw std::invalid_argument(msg);
-    }
-
-    switch (inet_pton(af, addr, &(name.sin_addr)))
-    {
-    case 1:
-        // success
-        break;
-    case 0:
-        {
-            std::ostringstream ss;
-            ss << "Invalid parameter 'ip': "
-                << addr;
-            auto msg = ss.str();
-#ifdef _DEBUG
-            std::cerr << msg
-                << std::endl;
-#endif
-            throw std::invalid_argument(msg);
-        }
-    case -1:
-        HandleError("HandleIPAddress", "inet_pton");
-        std::cerr << "ERR @ inet_pton"
-            << std::endl;
-        throw 1;
-    }
-    name.sin_family = af;
-    name.sin_port = htons(port);
-}
-void
-HandleIPAddress(_In_ int af, _In_ const std::string& addr, _In_ const Network::PORT port, _Out_ sockaddr_in& name)
-{
-    HandleIPAddress(af, addr.c_str(), port, name);
-}
-
 SOCKET
-NewSocket(_In_ int af, _In_ int type, _In_ int protocol, _In_ const char * addr, _In_ int port)
+NewSocket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ int protocol, _In_ const IP& ip, _In_ const PORT port)
 {
 #ifdef _DEBUG
     std::cout << "Net> NewSocket("
-        << "af=" << af << ", "
-        << "type=" << type << ", "
+        << "af=" << static_cast<int>(af) << ", "
+        << "type=" << static_cast<int>(type) << ", "
         << "protocol=" << protocol << ", "
-        << "addr=" << addr << ", "
+        << "addr=" << ip.data() << ", "
         << "port=" << port
         << ") invoked."
         << std::endl;
@@ -202,7 +114,7 @@ NewSocket(_In_ int af, _In_ int type, _In_ int protocol, _In_ const char * addr,
     // Linux:
     // On success, a file descriptor for the new socket is returned.
     // On error, -1 is returned, and _errno_ is set appropriately.
-    SOCKET s = socket(af, type, protocol);
+    SOCKET s{ socket(static_cast<int>(af), static_cast<int>(type), protocol) };
     if (s == INVALID_SOCKET)
     {
         fprintf(stderr, "ERR @ socket" NEWLINE);
@@ -210,14 +122,10 @@ NewSocket(_In_ int af, _In_ int type, _In_ int protocol, _In_ const char * addr,
         return INVALID_SOCKET;
     }
 
-    sockaddr_in addr_in = { 0 };
+    SocketAddress sockaddr{ af, ip, port };
+    const sockaddr_in& addr_in{ sockaddr.GetName() };
 
-    if (addr == NULL)
-        addr = "127.0.0.1";
-
-    HandleIPAddress(af, addr, port, addr_in);
-
-    if (bind(s, (SOCKADDR *)&addr_in, sizeof(addr_in)) == SOCKET_ERROR)
+    if (bind(s, reinterpret_cast<const SOCKADDR FAR*>(&addr_in), sizeof(addr_in)) == SOCKET_ERROR)
     {
         fprintf(stderr, "ERR @ bind" NEWLINE);
         goto error;
@@ -230,13 +138,11 @@ error:
     return INVALID_SOCKET;
 }
 
-using namespace Network;
-
 Network::Socket::
 Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::string& address, _In_ const PORT port)
     : family{ af }
     , type{ type }
-    , sock{ NewSocket(static_cast<int>(af), static_cast<int>(type), 0, address.c_str(), port) }
+    , sock{ NewSocket(af, type, 0, address, port) }
 {
 }
 
@@ -261,8 +167,8 @@ void
 Network::Socket::
 Connect(_In_ const std::string& address, _In_ const PORT port) const
 {
-    sockaddr_in name = { 0 };
-    HandleIPAddress(static_cast<int>(this->family), address.c_str(), port, name);
+    SocketAddress sockaddr{ this->family, IP{address}, port };
+    sockaddr_in name{ sockaddr.GetName() };
     if (connect(sock, (SOCKADDR *)&name, sizeof(name)) != 0)
     {
         HandleError("Network::Socket::Connect", "connect");
@@ -354,9 +260,9 @@ SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags,
     if (buffer == nullptr)
         return;
 
-    sockaddr_in name = { 0 };
-    HandleIPAddress(static_cast<int>(this->family), ip, port, name);
-    int nbytes = sendto(sock, buffer, length, flags, (sockaddr*)&name, sizeof(name));
+    SocketAddress sockaddr{ this->family, ip, port };
+    const sockaddr_in& name{ sockaddr.GetName() };
+    int nbytes = sendto(sock, buffer, length, flags, reinterpret_cast<const SOCKADDR FAR*>(&name), sizeof(name));
     if (nbytes == SOCKET_ERROR)
     {
         HandleError("Network::Socket::SendTo", "sendto");
@@ -401,8 +307,7 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
 {
     sockaddr_in name = { 0 };
     int namelen{ sizeof(name) };
-    HandleIPAddress(static_cast<int>(this->family), ip.data().c_str(), port, name);
-    int nbytes = recvfrom(sock, buffer, length, flags, (sockaddr*)&name, &namelen);
+    int nbytes = recvfrom(sock, buffer, length, flags, (SOCKADDR FAR*)&name, &namelen);
     if (nbytes == SOCKET_ERROR)
     {
         HandleError("Network::Socket::ReceiveFrom", "recvfrom");
