@@ -14,24 +14,24 @@ namespace DNS
     enum class RecordType : uint8_t
     {
         // RFC 1035
-        RT_A = 1, // a host address
-        RT_NS = 2, // an authoritative name server
-        RT_MD = 3, // a mail destination (Obsolete - use MX)
-        RT_MF = 4, // a mail forwarder (Obsolete - use MX)
-        RT_CNAME = 5, // the canonical name for an alias
-        RT_SOA = 6, // marks the start of a zone of authority
-        RT_MB = 7, // a mailbox domain name (EXPERIMENTAL)
-        RT_MG = 8, // a mail group member (EXPERIMENTAL)
-        RT_MR = 9, // a mail rename domain name (EXPERIMENTAL)
-        RT_NULL = 10, // a null RR (EXPERIMENTAL)
-        RT_WKS = 11, // a well known service description
-        RT_PTR = 12, // a domain name pointer
-        RT_HINFO = 13, // host information
-        RT_MINFO = 14, // mailbox or mail list information
-        RT_MX = 15, // mail exchange
-        RT_TXT = 16, // text strings
+        RT_A        = 1,    // a host address
+        RT_NS       = 2,    // an authoritative name server
+        RT_MD       = 3,    // a mail destination (Obsolete - use MX)
+        RT_MF       = 4,    // a mail forwarder (Obsolete - use MX)
+        RT_CNAME    = 5,    // the canonical name for an alias
+        RT_SOA      = 6,    // marks the start of a zone of authority
+        RT_MB       = 7,    // a mailbox domain name (EXPERIMENTAL)
+        RT_MG       = 8,    // a mail group member (EXPERIMENTAL)
+        RT_MR       = 9,    // a mail rename domain name (EXPERIMENTAL)
+        RT_NULL     = 10,   // a null RR (EXPERIMENTAL)
+        RT_WKS      = 11,   // a well known service description
+        RT_PTR      = 12,   // a domain name pointer
+        RT_HINFO    = 13,   // host information
+        RT_MINFO    = 14,   // mailbox or mail list information
+        RT_MX       = 15,   // mail exchange
+        RT_TXT      = 16,   // text strings
 
-        RT_AAAA = 28,
+        RT_AAAA     = 28,
     };
 
     /*
