@@ -190,6 +190,7 @@ namespace Network
         const SOCKET& GetHandle() const;
 
         void Connect(_In_ const std::string& address, _In_ const PORT port) const;
+        void Connect(_In_ const SocketAddress& address) const;
         void Disconnect() const;
 
         void Listen() const;

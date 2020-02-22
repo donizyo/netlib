@@ -166,8 +166,15 @@ Network::Socket::
 Connect(_In_ const std::string& address, _In_ const PORT port) const
 {
     SocketAddress sockaddr{ this->family, IP{address}, port };
-    sockaddr_in name{ sockaddr.GetName() };
-    if (connect(sock, (SOCKADDR *)&name, sizeof(name)) != 0)
+    Connect(sockaddr);
+}
+
+void
+Network::Socket::
+Connect(_In_ const SocketAddress& address) const
+{
+    sockaddr_in name{ address.GetName() };
+    if (connect(sock, reinterpret_cast<const SOCKADDR FAR*>(&name), sizeof(name)) != 0)
     {
         HandleError("Network::Socket::Connect", "connect");
         throw 1;
