@@ -199,6 +199,7 @@ namespace Network
 
         void Send(_In_ const std::string& text, _In_ const int flags) const;
         void Send(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags) const;
+        void Send(_In_ const std::vector<char>& buffer, _In_ const int flags) const;
 
         void SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port) const;
         void SendTo(_In_ const std::vector<char>& buffer, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port) const;

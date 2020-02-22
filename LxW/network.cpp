@@ -252,6 +252,13 @@ Send(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags) c
 
 void
 Network::Socket::
+Send(_In_ const std::vector<char>& buffer, _In_ const int flags) const
+{
+    Send(buffer.capacity(), buffer.data(), flags);
+}
+
+void
+Network::Socket::
 SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port) const
 {
     std::clog << "Net> Network::Socket::SendTo(length=" << length
