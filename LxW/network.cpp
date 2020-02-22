@@ -277,6 +277,13 @@ SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags,
 
 void
 Network::Socket::
+SendTo(_In_ const std::vector<char>& buffer, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port) const
+{
+    SendTo(buffer.capacity(), buffer.data(), flags, ip, port);
+}
+
+void
+Network::Socket::
 Receive(_Out_ std::string& text, _In_ const int flags)
 {
     char recvbuf[RECV_BUFSIZE] = { 0 };
