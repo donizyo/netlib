@@ -146,7 +146,7 @@ namespace DNS
 #define rLetDig     rLetter rDigit
 #define pLetDig     "[" rLetDig "]"
 // <let-dig-hyp> ::= <let-dig> | "-"
-#define rLetDigHyp  rLetter rDigit "\\-"
+#define rLetDigHyp  rLetDig "\\-"
 // <ldh-str> ::= <let-dig-hyp> | <let-dig-hyp> <ldh-str>
 #define pLdhStr     "[" rLetDigHyp "]+"
 // <label> ::= <letter> [ [ <ldh-str> ] <let-dig> ]
