@@ -279,8 +279,7 @@ void
 Network::Socket::
 Receive(_Out_ std::string& text, _In_ const int flags)
 {
-    char recvbuf[RECV_BUFSIZE];
-    memset(recvbuf, 0, sizeof(recvbuf));
+    char recvbuf[RECV_BUFSIZE] = { 0 };
     Receive(sizeof(recvbuf), recvbuf, flags);
     text = std::string(recvbuf, strlen(recvbuf));
 }
