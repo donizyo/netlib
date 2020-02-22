@@ -211,7 +211,6 @@ namespace Network
         void SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port) const;
         void SendTo(_In_ const std::vector<char>& buffer, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port) const;
 
-        void Receive(_Out_ std::string& text, _In_ const int flags);
         void Receive(_In_ const int bufsize, _Out_writes_bytes_all_(bufsize) char* buf, _In_ const int flags);
         void Receive(_Inout_ std::vector<char>& buff, _In_ const int flags);
 

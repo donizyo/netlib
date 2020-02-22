@@ -176,8 +176,11 @@ Connect(_In_ const SocketAddress& address) const
     sockaddr_in name{ address.GetName() };
     if (connect(sock, reinterpret_cast<const SOCKADDR FAR*>(&name), sizeof(name)) != 0)
     {
-        HandleError("Network::Socket::Connect", "connect");
-        throw 1;
+        std::ostringstream ss;
+        ss << "Fail to connect to address ["
+            << address.GetIP().data() << ":" << address.GetPort()
+            << "]!";
+        throw SocketException(ss.str());
     }
 }
 
@@ -187,8 +190,7 @@ Disconnect() const
 {
     if (shutdown(sock, static_cast<int>(Network::Shutdown::Both)) == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::Disconnect", "shutdown");
-        throw 1;
+        throw SocketException("Fail to shutdown the connection!");
     }
 }
 
@@ -209,8 +211,7 @@ Listen() const
     int backlog = 128;
     if (listen(sock, backlog) == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::Listen", "listen");
-        throw 1;
+        throw SocketException("Fail to listen to the incoming connections!");
     }
 }
 
@@ -223,8 +224,7 @@ Accept() const
     SOCKET s = accept(sock, reinterpret_cast<SOCKADDR FAR*>(&addr), &addrlen);
     if (s == INVALID_SOCKET)
     {
-        HandleError("Network::Socket::Accept", "accept");
-        throw 1;
+        throw SocketException("Fail to accept the incoming connections!");
     }
 }
 
@@ -245,8 +245,7 @@ Send(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags) c
     int nbytes = send(sock, buffer, length, flags);
     if (nbytes == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::Send", "send");
-        throw 1;
+        throw SocketException("Fail to send any packet!");
     }
 }
 
@@ -277,8 +276,11 @@ SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags,
     int nbytes = sendto(sock, buffer, length, flags, reinterpret_cast<const SOCKADDR FAR*>(&name), sizeof(name));
     if (nbytes == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::SendTo", "sendto");
-        throw 1;
+        std::ostringstream ss;
+        ss << "Fail to send packets to address ["
+            << sockaddr.GetIP().data() << ":" << sockaddr.GetPort()
+            << "]!";
+        throw SocketException(ss.str());
     }
 }
 
@@ -291,24 +293,14 @@ SendTo(_In_ const std::vector<char>& buffer, _In_ const int flags, _In_ const IP
 
 void
 Network::Socket::
-Receive(_Out_ std::string& text, _In_ const int flags)
-{
-    char recvbuf[RECV_BUFSIZE] = { 0 };
-    Receive(sizeof(recvbuf), recvbuf, flags);
-    text = std::string(recvbuf, strlen(recvbuf));
-}
-
-void
-Network::Socket::
 Receive(_In_ const int bufsize, _Out_writes_bytes_all_(bufsize) char* buf, _In_ const int flags)
 {
     if (buf == nullptr)
-        throw 1;
+        return;
 
     if (recv(sock, buf, bufsize, flags) == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::Receive", "recv");
-        throw 1;
+        throw SocketException("Fail to receive connections!");
     }
 }
 
@@ -328,8 +320,7 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
     int nbytes = recvfrom(sock, buffer, length, flags, (SOCKADDR FAR*)&name, &namelen);
     if (nbytes == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::ReceiveFrom", "recvfrom");
-        throw 1;
+        throw SocketException("Fail to receive packets!");
     }
 }
 
@@ -359,8 +350,7 @@ Select(_In_ const int nfds, _Inout_updates_bytes_all_opt_(nfds) fd_set* rfds, _I
     int retval = select(nfds, rfds, wfds, efds, timeout);
     if (retval == SOCKET_ERROR)
     {
-        HandleError("Network::Socket::Select", "select");
-        throw 1;
+        throw SocketException("Fail to select!");
     }
 }
 
