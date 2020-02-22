@@ -218,9 +218,9 @@ void
 Network::Socket::
 Accept() const
 {
-    sockaddr_in addr = { 0 };
+    sockaddr_in addr{ 0 };
     int addrlen{ sizeof(addr) };
-    SOCKET s = accept(sock, (sockaddr*)(&addr), &addrlen);
+    SOCKET s = accept(sock, reinterpret_cast<SOCKADDR FAR*>(&addr), &addrlen);
     if (s == INVALID_SOCKET)
     {
         HandleError("Network::Socket::Accept", "accept");
