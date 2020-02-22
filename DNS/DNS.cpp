@@ -141,7 +141,6 @@ namespace DNS
 #define pLetter     "[" rLetter "]"
 // <digit> ::= any one of the ten digits 0 through 9
 #define rDigit      "0-9"
-#define pDigit      "[" rDigit "]"
 // <let-dig> ::= <letter> | <digit>
 #define rLetDig     rLetter rDigit
 #define pLetDig     "[" rLetDig "]"
@@ -169,7 +168,6 @@ namespace DNS
 #undef rLetter
 #undef pLetter
 #undef rDigit
-#undef pDigit
 #undef rLetDig
 #undef pLetDig
 #undef rLetDigHyp
