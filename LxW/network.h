@@ -125,6 +125,77 @@ namespace Network
         Raw = SOCK_RAW,
     };
 
+    // Internet Header Format
+    // @see: https://tools.ietf.org/html/rfc791
+    //      A summary of the contents of the internet header follows:
+    //
+    //       0                   1                   2                   3
+    //       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    //      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    //      |Version|  IHL  |Type of Service|          Total Length         |
+    //      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    //      |         Identification        |Flags|      Fragment Offset    |
+    //      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    //      |  Time to Live |    Protocol   |         Header Checksum       |
+    //      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    //      |                       Source Address                          |
+    //      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    //      |                    Destination Address                        |
+    //      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    //      |                    Options                    |    Padding    |
+    //      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    struct IPHeader
+    {
+        // Version
+        //      4
+        // IHL
+        //      Internet header length in 32-bit words.
+#if (OS == OS_WINDOWS) /* Little endian is used on Windows */
+        std::uint8_t    hl : 4;
+        std::uint8_t    v : 4;
+#elif (OS == OS_LINUX)
+#   if __BYTE_ORDER == __LITTLE_ENDIAN
+        std::uint8_t    hl : 4;
+        std::uint8_t    v : 4;
+#   elif __BYTE_ORDER == __BIG_ENDIAN
+        std::uint8_t    v : 4;
+        std::uint8_t    hl : 4;
+#   endif
+#else
+#   error "Unsupported operation system!"
+#endif
+    // Type of Service
+        std::uint8_t    tos;
+        // Total Length
+        //      Length of internet header and data in octets.
+        std::uint16_t   len;
+        // Identification, Flags, Fragment Offset
+        //      Used in fragmentation
+        std::uint16_t   id;     // identification
+        std::uint16_t   off;    // fragment offset field
+        // Time to Live
+        //      Time to live in seconds; as this field is decremented at each
+        //      machine in which the datagram is processed, the value in this
+        //      field should be at least as great as the number of gateways which
+        //      this datagram will traverse.
+        std::uint8_t    ttl;
+        // Protocol
+        std::uint8_t    p;
+        // Header Checksum
+        //      The 16 bit one's complement of the one's complement sum of all 16
+        //      bit words in the header. For computing the checksum, the checksum
+        //      field should be zero. This checksum may be replaced in the future.
+        std::uint16_t   sum;
+        // Source Address
+        //      The address of the gateway or host that composes the ICMP message.
+        //      Unless otherwise noted, this can be any of a gateway's addresses.
+        in_addr         src;
+        // Destination Address
+        //      The address of the gateway or host to which the message should be
+        //      sent.
+        in_addr         dst;
+    };
+
     enum class Shutdown : int
     {
 #if OS == OS_WINDOWS
