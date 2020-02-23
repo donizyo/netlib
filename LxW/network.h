@@ -251,6 +251,8 @@ namespace Network
         DllExport const AddressFamily& GetFamily() const;
         DllExport const IP& GetIP() const;
         DllExport const PORT GetPort() const;
+
+        DllExport static std::string ToString(const sockaddr* sa);
     };
 
     class DllExport Socket

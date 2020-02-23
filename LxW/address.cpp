@@ -61,3 +61,26 @@ GetPort() const
 {
     return this->port;
 }
+
+// @see: https://stackoverflow.com/a/9212542/4927212
+static const void* get_in_addr(const sockaddr* sa)
+{
+    switch (sa->sa_family)
+    {
+    case AF_INET:
+        return &((reinterpret_cast<const sockaddr_in*>(sa))->sin_addr);
+    case AF_INET6:
+        return &((reinterpret_cast<const sockaddr_in6*>(sa))->sin6_addr);
+    }
+    throw SocketException("Unsupported operation!");
+}
+
+std::string
+SocketAddress::
+ToString(const sockaddr* sa)
+{
+    char ipbuf[INET6_ADDRSTRLEN] = { 0 };
+    inet_ntop(static_cast<int>(AddressFamily::IPv4),
+        get_in_addr(sa), ipbuf, sizeof(ipbuf));
+    return std::string{ ipbuf };
+}
