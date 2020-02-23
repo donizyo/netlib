@@ -326,7 +326,9 @@ namespace DNS
             {
                 char buffer[TCP_BUFFER_CAPACITY];
                 memset(buffer, 0, sizeof(buffer));
-                hdlr->sp->ReceiveFrom(sizeof(buffer), buffer, 0, ip, port);
+                sockaddr_in name{ 0 };
+                int namelen{ sizeof(name) };
+                hdlr->sp->ReceiveFrom(sizeof(buffer), buffer, 0, reinterpret_cast<sockaddr*>(&name), &namelen);
 
                 memcpy(&header, buffer, sizeof(header));
                 NTOHS(header.qdcount);
