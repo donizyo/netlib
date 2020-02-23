@@ -52,9 +52,11 @@ InitNetwork()
             errmsg = "";
             break;
         }
-        fprintf(stderr, "ERR @ WSAStartup (err: %s %x)" NEWLINE,
-            errmsg, errcode);
-        return -1;
+        std::ostringstream ss;
+        ss << "ERR @ WSAStartup (err: "
+            << errmsg << " " << errcode << ")"
+            << std::endl;
+        throw SocketException(ss.str());
     }
     return 0;
 }
@@ -117,9 +119,7 @@ NewSocket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ int prot
     SOCKET s{ socket(static_cast<int>(af), static_cast<int>(type), protocol) };
     if (s == INVALID_SOCKET)
     {
-        fprintf(stderr, "ERR @ socket" NEWLINE);
-        HandleError("NewSocket", "socket");
-        return INVALID_SOCKET;
+        throw SocketException("Fail to create a socket!");
     }
 
     SocketAddress sockaddr{ af, ip, port };
@@ -127,15 +127,11 @@ NewSocket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ int prot
 
     if (bind(s, reinterpret_cast<const SOCKADDR FAR*>(&addr_in), sizeof(addr_in)) == SOCKET_ERROR)
     {
-        fprintf(stderr, "ERR @ bind" NEWLINE);
-        goto error;
+        CloseSocket(s, Network::Shutdown::Send);
+        throw SocketException("Fail to bind the socket!");
     }
 
     return s;
-
-error:
-    CloseSocket(s, Network::Shutdown::Send);
-    return INVALID_SOCKET;
 }
 
 Network::Socket::
