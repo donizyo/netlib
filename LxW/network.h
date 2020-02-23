@@ -285,8 +285,10 @@ namespace Network
         void Receive(_In_ const int bufsize, _Out_writes_bytes_all_(bufsize) char* buf, _In_ const int flags);
         void Receive(_Inout_ std::vector<char>& buff, _In_ const int flags);
 
-        void ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port) const;
-        void ReceiveFrom(_Inout_ std::vector<char>& buff, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port);
+        void ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags,
+            _Out_writes_bytes_to_opt_(*fromlen, *fromlen) sockaddr FAR* from, _Inout_opt_ int FAR* fromlen) const;
+        void ReceiveFrom(_Inout_ std::vector<char>& buff, _In_ const int flags,
+            _Out_writes_bytes_to_opt_(*fromlen, *fromlen) sockaddr FAR* from, _Inout_opt_ int FAR* fromlen);
 
         void Select();
 

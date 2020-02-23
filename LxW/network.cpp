@@ -321,11 +321,10 @@ Receive(_Inout_ std::vector<char>& buff, _In_ const int flags)
 
 void
 Network::Socket::
-ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port) const
+ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, _In_ const int flags,
+    _Out_writes_bytes_to_opt_(*fromlen, *fromlen) sockaddr FAR* from, _Inout_opt_ int FAR* fromlen) const
 {
-    sockaddr_in name = { 0 };
-    int namelen{ sizeof(name) };
-    int nbytes = recvfrom(sock, buffer, length, flags, (SOCKADDR FAR*)&name, &namelen);
+    int nbytes = recvfrom(sock, buffer, length, flags, from, fromlen);
     if (nbytes == SOCKET_ERROR)
     {
         throw SocketException("Fail to receive packets!");
@@ -334,9 +333,10 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
 
 void
 Network::Socket::
-ReceiveFrom(_Inout_ std::vector<char>& buff, _In_ const int flags, _In_ const IP& ip, _In_ const PORT port)
+ReceiveFrom(_Inout_ std::vector<char>& buff, _In_ const int flags,
+    _Out_writes_bytes_to_opt_(*fromlen, *fromlen) sockaddr FAR* from, _Inout_opt_ int FAR* fromlen)
 {
-    ReceiveFrom(buff.capacity(), buff.data(), flags, ip, port);
+    ReceiveFrom(buff.capacity(), buff.data(), flags, from, fromlen);
 }
 
 void
