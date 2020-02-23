@@ -17,6 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ICMP", "ICMP\ICMP.vcxproj", "{71A8FB68-5B33-4E34-A22D-6547F7B3C0BF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1F3D0C1B-71FB-4F3C-85A8-63E6052CBA31} = {1F3D0C1B-71FB-4F3C-85A8-63E6052CBA31}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
