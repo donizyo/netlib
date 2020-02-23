@@ -109,9 +109,11 @@ NewSocket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ int prot
     // If no error occurs, socket returns a descriptor referencing the new socket.
     // Otherwise, a value of INVALID_SOCKET is returned,
     // and a specific error code can be retrieved by calling WSAGetLastError.
+    // @see: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-socket
     // Linux:
     // On success, a file descriptor for the new socket is returned.
     // On error, -1 is returned, and _errno_ is set appropriately.
+    // @see: https://linux.die.net/man/2/socket
     SOCKET s{ socket(static_cast<int>(af), static_cast<int>(type), protocol) };
     if (s == INVALID_SOCKET)
     {
@@ -603,7 +605,6 @@ const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In
     }
     else if (winapi_func_name == "socket")
     {
-        // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-socket
         switch (code)
         {
         case WSANOTINITIALISED:
