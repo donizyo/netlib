@@ -10,7 +10,7 @@ const static std::regex rgx_ipv4{ pattern, std::regex_constants::ECMAScript };
 
 IP::
 IP(const std::string& ip)
-    : ip{ ip }
+    : ip{ ip != "localhost" ? ip : "127.0.0.1" }
 {
     std::smatch match;
     if (ip != "localhost"
