@@ -145,6 +145,12 @@ Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::
 }
 
 Network::Socket::
+Socket(_In_ const AddressFamily af, _In_ const SocketType type)
+    : Socket{af, type, "localhost", 0}
+{
+}
+
+Network::Socket::
 ~Socket()
 {
     if (sock != INVALID_SOCKET)

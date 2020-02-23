@@ -13,7 +13,8 @@ IP(const std::string& ip)
     : ip{ ip }
 {
     std::smatch match;
-    if (!std::regex_match(ip, match, rgx_ipv4))
+    if (ip != "localhost"
+        && !std::regex_match(ip, match, rgx_ipv4))
         throw InvalidIPException{ ip };
 }
 

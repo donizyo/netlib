@@ -191,6 +191,7 @@ namespace Network
     public:
         Socket() = delete;
         Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::string& address, _In_ const PORT port);
+        Socket(_In_ const AddressFamily af, _In_ const SocketType type);
         ~Socket();
 
         const SOCKET& GetHandle() const;
