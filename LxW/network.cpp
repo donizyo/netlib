@@ -8,7 +8,7 @@ using namespace Network;
 constexpr static int RECV_BUFSIZE{ 4096 };
 
 void CloseSocket(_In_ const SOCKET& s, _In_ const Network::Shutdown how);
-void HandleError(_In_ const std::string&& func_name, _In_ const std::string&& winapi_func_name);
+static std::string HandleError(_In_ const std::string&& func_name, _In_ const std::string&& winapi_func_name);
 
 #if OS == OS_WINDOWS
 thread_local WSADATA wsaData{ 0 };
@@ -119,7 +119,9 @@ NewSocket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ int prot
     SOCKET s{ socket(static_cast<int>(af), static_cast<int>(type), protocol) };
     if (s == INVALID_SOCKET)
     {
-        throw SocketException("Fail to create a socket!");
+        std::ostringstream ss;
+        ss << "Fail to create a socket: " << HandleError("NewSocket", "socket");
+        throw SocketException(ss.str());
     }
 
     SocketAddress sockaddr{ af, ip, port };
@@ -183,7 +185,8 @@ Connect(_In_ const SocketAddress& address) const
         std::ostringstream ss;
         ss << "Fail to connect to address ["
             << address.GetIP().data() << ":" << address.GetPort()
-            << "]!";
+            << "]: "
+            << HandleError("Network::Socket::Connect", "connect");
         throw SocketException(ss.str());
     }
 }
@@ -194,7 +197,10 @@ Disconnect() const
 {
     if (shutdown(sock, static_cast<int>(Network::Shutdown::Both)) == SOCKET_ERROR)
     {
-        throw SocketException("Fail to shutdown the connection!");
+        std::ostringstream ss;
+        ss << "Fail to shutdown the connection: "
+            << HandleError("Network::Socket::Disconnect", "shutdown");
+        throw SocketException(ss.str());
     }
 }
 
@@ -215,7 +221,10 @@ Listen() const
     int backlog = 128;
     if (listen(sock, backlog) == SOCKET_ERROR)
     {
-        throw SocketException("Fail to listen to the incoming connections!");
+        std::ostringstream ss;
+        ss << "Fail to listen to the incoming connections: "
+            << HandleError("Network::Socket::Listen", "listen");
+        throw SocketException(ss.str());
     }
 }
 
@@ -228,7 +237,10 @@ Accept() const
     SOCKET s = accept(sock, reinterpret_cast<SOCKADDR FAR*>(&addr), &addrlen);
     if (s == INVALID_SOCKET)
     {
-        throw SocketException("Fail to accept the incoming connections!");
+        std::ostringstream ss;
+        ss << "Fail to accept the incoming connections: "
+            << HandleError("Network::Socket::Accept", "accept");
+        throw SocketException(ss.str());
     }
 }
 
@@ -249,7 +261,10 @@ Send(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags) c
     int nbytes = send(sock, buffer, length, flags);
     if (nbytes == SOCKET_ERROR)
     {
-        throw SocketException("Fail to send any packet!");
+        std::ostringstream ss;
+        ss << "Fail to send any packet: "
+            << HandleError("Network::Socket::Send", "send");
+        throw SocketException(ss.str());
     }
 }
 
@@ -283,7 +298,8 @@ SendTo(_In_ const int length, _In_opt_ const char* buffer, _In_ const int flags,
         std::ostringstream ss;
         ss << "Fail to send packets to address ["
             << sockaddr.GetIP().data() << ":" << sockaddr.GetPort()
-            << "]!";
+            << "]: "
+            << HandleError("Network::Socket::SendTo", "sendto");
         throw SocketException(ss.str());
     }
 }
@@ -304,7 +320,10 @@ Receive(_In_ const int bufsize, _Out_writes_bytes_all_(bufsize) char* buf, _In_ 
 
     if (recv(sock, buf, bufsize, flags) == SOCKET_ERROR)
     {
-        throw SocketException("Fail to receive connections!");
+        std::ostringstream ss;
+        ss << "Fail to receive connections: "
+            << HandleError("Network::Socket::Receive", "recv");
+        throw SocketException(ss.str());
     }
 }
 
@@ -323,7 +342,10 @@ ReceiveFrom(_In_ const int length, _Out_writes_bytes_all_(length) char* buffer, 
     int nbytes = recvfrom(sock, buffer, length, flags, from, fromlen);
     if (nbytes == SOCKET_ERROR)
     {
-        throw SocketException("Fail to receive packets!");
+        std::ostringstream ss;
+        ss << "Fail to receive packets: "
+            << HandleError("Network::Socket::ReceiveFrom", "recvfrom");
+        throw SocketException(ss.str());
     }
 }
 
@@ -354,7 +376,10 @@ Select(_In_ const int nfds, _Inout_updates_bytes_all_opt_(nfds) fd_set* rfds, _I
     int retval = select(nfds, rfds, wfds, efds, timeout);
     if (retval == SOCKET_ERROR)
     {
-        throw SocketException("Fail to select!");
+        std::ostringstream ss;
+        ss << "Fail to select: "
+            << HandleError("Network::Socket::Select", "select");
+        throw SocketException(ss.str());
     }
 }
 
@@ -1061,7 +1086,7 @@ const char* GetDetailedErrorString(_In_ const std::string& winapi_func_name, _In
     return result;
 }
 
-void HandleErrorCode(_In_ const std::string& func_name, _In_ const int code, _In_ const std::string& winapi_func_name)
+std::string HandleErrorCode(_In_ const std::string& func_name, _In_ const int code, _In_ const std::string& winapi_func_name)
 {
     std::ostringstream ss;
     ss << "ERR @ '"
@@ -1072,20 +1097,17 @@ void HandleErrorCode(_In_ const std::string& func_name, _In_ const int code, _In
         << TranslateErrorCode(code)
         << ") "
         << GetDetailedErrorString(winapi_func_name, code);
-#ifdef _DEBUG
-    std::cerr << ss.str();
-#endif
+    return ss.str();
 }
 
 /*
 Print the name of buggy function and error code.
 @see: https://docs.microsoft.com/zh-cn/windows/win32/winsock/windows-sockets-error-codes-2
 */
-void
-HandleError(_In_ const std::string&& func_name, _In_ const std::string&& winapi_func_name)
+std::string HandleError(_In_ const std::string&& func_name, _In_ const std::string&& winapi_func_name)
 {
     int code = WSAGetLastError();
-    HandleErrorCode(func_name, code, winapi_func_name);
+    return HandleErrorCode(func_name, code, winapi_func_name);
 }
 #elif OS == OS_LINUX
 void
