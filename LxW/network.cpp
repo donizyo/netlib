@@ -160,13 +160,6 @@ Network::Socket::
     }
 }
 
-const SOCKET&
-Network::Socket::
-GetHandle() const
-{
-    return sock;
-}
-
 void
 Network::Socket::
 Connect(_In_ const std::string& address, _In_ const PORT port) const

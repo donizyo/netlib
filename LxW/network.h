@@ -267,8 +267,6 @@ namespace Network
         Socket(_In_ const AddressFamily af, _In_ const SocketType type);
         ~Socket();
 
-        const SOCKET& GetHandle() const;
-
         void Connect(_In_ const std::string& address, _In_ const PORT port) const;
         void Connect(_In_ const SocketAddress& address) const;
         void Disconnect() const;
