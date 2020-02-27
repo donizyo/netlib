@@ -267,7 +267,7 @@ namespace Network
         Socket() = delete;
         Socket(const Socket&) = default;
         Socket(Socket&&) = default;
-        Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::string& address, _In_ const PORT port);
+        Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const IP& address, _In_ const PORT port);
         Socket(_In_ const AddressFamily af, _In_ const SocketType type);
         ~Socket();
 

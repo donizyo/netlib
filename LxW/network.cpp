@@ -137,7 +137,7 @@ NewSocket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ int prot
 }
 
 Network::Socket::
-Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::string& address, _In_ const PORT port)
+Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const IP& address, _In_ const PORT port)
     : family{ af }
     , type{ type }
     , sock{ NewSocket(af, type, 0, address, port) }
@@ -146,7 +146,7 @@ Socket(_In_ const AddressFamily af, _In_ const SocketType type, _In_ const std::
 
 Network::Socket::
 Socket(_In_ const AddressFamily af, _In_ const SocketType type)
-    : Socket{af, type, "localhost", 0}
+    : Socket{ af, type, IP::LocalHost, 0 }
 {
 }
 
