@@ -9,7 +9,7 @@ const static std::string pattern{ R"(^(?:(?:[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][
 const static std::regex rgx_ipv4{ pattern, std::regex_constants::ECMAScript };
 
 IP::
-IP(const std::string& ip)
+IP(_In_ const std::string& ip)
     : ip{ ip != "localhost" ? ip : "127.0.0.1" }
 {
     std::smatch match;

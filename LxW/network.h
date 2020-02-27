@@ -215,7 +215,7 @@ namespace Network
         const std::string ip;
 
     public:
-        DllExport IP(const std::string& ip);
+        DllExport IP(_In_ const std::string& ip);
 
         DllExport static const IP LocalHost;
 
