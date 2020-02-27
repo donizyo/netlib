@@ -254,7 +254,7 @@ namespace Network
         DllExport const IP& GetIP() const;
         DllExport const PORT GetPort() const;
 
-        DllExport static std::string ToString(const sockaddr* sa);
+        DllExport static std::string ToString(_In_ const sockaddr* sa);
     };
 
     class DllExport Socket

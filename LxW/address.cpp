@@ -77,7 +77,7 @@ static const void* get_in_addr(const sockaddr* sa)
 
 std::string
 SocketAddress::
-ToString(const sockaddr* sa)
+ToString(_In_ const sockaddr* sa)
 {
     char ipbuf[INET6_ADDRSTRLEN] = { 0 };
     inet_ntop(static_cast<int>(AddressFamily::IPv4),
