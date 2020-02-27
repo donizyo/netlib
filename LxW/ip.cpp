@@ -33,7 +33,7 @@ static inline std::string FormatInvalidIPExceptionMessage(const std::string& ip)
 }
 
 InvalidIPException::
-InvalidIPException(const std::string& ip)
+InvalidIPException(_In_ const std::string& ip)
     : std::runtime_error(FormatInvalidIPExceptionMessage(ip))
 {
 }
