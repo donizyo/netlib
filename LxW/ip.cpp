@@ -18,6 +18,8 @@ IP(const std::string& ip)
         throw InvalidIPException{ ip };
 }
 
+const IP IP::LocalHost{ "localhost" };
+
 const std::string&
 IP::
 data() const

@@ -217,6 +217,8 @@ namespace Network
     public:
         DllExport IP(const std::string& ip);
 
+        DllExport static const IP LocalHost;
+
         DllExport const std::string& data() const;
     };
 
